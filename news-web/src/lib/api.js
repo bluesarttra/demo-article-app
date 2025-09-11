@@ -31,6 +31,7 @@ export async function getArticles(params = {}) {
     populate = '*', // ใช้ populate=* แทน
     pagination = { page: 1, pageSize: 10 },
     filters = {},
+    locale = 'en', // Default locale
   } = params;
 
   // Build query parameters for Strapi v5
@@ -39,6 +40,11 @@ export async function getArticles(params = {}) {
   // Add sort
   if (sort) {
     queryParams.append('sort', sort);
+  }
+  
+  // Add locale
+  if (locale) {
+    queryParams.append('locale', locale);
   }
   
   // Add populate - ใช้ populate=* สำหรับทุกฟิลด์
@@ -73,10 +79,11 @@ export async function getArticles(params = {}) {
 }
 
 // Fetch single article by slug
-export async function getArticle(slug) {
+export async function getArticle(slug, locale = 'en') {
   const queryParams = new URLSearchParams();
   queryParams.append('filters[slug][$eq]', slug);
   queryParams.append('populate', '*'); // ใช้ populate=* แทน
+  queryParams.append('locale', locale);
 
   try {
     const response = await fetchAPI(`/api/articles?${queryParams}`);
@@ -88,10 +95,11 @@ export async function getArticle(slug) {
 }
 
 // Fetch featured articles (you can customize this logic)
-export async function getFeaturedArticles(limit = 3) {
+export async function getFeaturedArticles(limit = 3, locale = 'en') {
   return getArticles({
     pagination: { page: 1, pageSize: limit },
     filters: { featured: { $eq: true } }, // Assuming you have a featured field
+    locale: locale,
   });
 }
 
@@ -105,15 +113,6 @@ export async function getCategories() {
   }
 }
 
-// Fetch authors
-export async function getAuthors() {
-  try {
-    return await fetchAPI('/api/authors?populate=*');
-  } catch (error) {
-    console.error('Error fetching authors:', error);
-    return { data: [] };
-  }
-}
 
 // Search articles
 export async function searchArticles(query, params = {}) {
@@ -123,6 +122,7 @@ export async function searchArticles(query, params = {}) {
   queryParams.append('populate', '*'); // ใช้ populate=* แทน
   queryParams.append('pagination[page]', params.pagination?.page || 1);
   queryParams.append('pagination[pageSize]', params.pagination?.pageSize || 10);
+  queryParams.append('locale', params.locale || 'en'); // Default locale
   
   if (params.sort) {
     queryParams.append('sort', params.sort);

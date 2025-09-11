@@ -37,7 +37,7 @@ const Banner = ({
     >
       {/* Overlay for better text readability when using background image */}
       {backgroundImage && (
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+        <div className="absolute inset-0"></div>
       )}
       
       {/* Content with relative positioning to appear above overlay */}

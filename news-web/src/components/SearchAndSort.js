@@ -1,6 +1,6 @@
 'use client';
 
-import { SearchInput, SortBox } from './index';
+import { SearchInput, SortBox, LocaleSwitcher } from './index';
 
 /**
  * SearchAndSort Component
@@ -14,12 +14,14 @@ import { SearchInput, SortBox } from './index';
  * 
  * @param {Array} sortOptions - Array of sort options for the SortBox
  * @param {string} sortValue - Currently selected sort value
- * {function} onSortChange - Callback when sort selection changes
- * {function} onSearch - Callback when search is triggered
- * {string} searchPlaceholder - Placeholder text for search input
- * {string} sortPlaceholder - Placeholder text for sort box
- * {string} className - Additional CSS classes
- * {object} props - Additional props passed to the container div
+ * @param {function} onSortChange - Callback when sort selection changes
+ * @param {function} onSearch - Callback when search is triggered
+ * @param {string} searchPlaceholder - Placeholder text for search input
+ * @param {string} sortPlaceholder - Placeholder text for sort box
+ * @param {string} currentLocale - Currently selected locale
+ * @param {function} onLocaleChange - Callback when locale changes
+ * @param {string} className - Additional CSS classes
+ * @param {object} props - Additional props passed to the container div
  */
 const SearchAndSort = ({ 
   sortOptions = [],
@@ -28,6 +30,8 @@ const SearchAndSort = ({
   onSearch,
   searchPlaceholder = "Search...",
   sortPlaceholder = "Sort by...",
+  currentLocale = "en",
+  onLocaleChange,
   className = "",
   ...props 
 }) => {
@@ -45,13 +49,18 @@ const SearchAndSort = ({
         />
       </div>
 
-      {/* Sort Box */}
-      <div className="ml-4 flex items-center">
+      {/* Sort Box and Locale Switcher */}
+      <div className="ml-4 flex items-center gap-3">
         <SortBox 
           options={sortOptions}
           value={sortValue}
           onChange={onSortChange}
           placeholder={sortPlaceholder}
+        />
+        <LocaleSwitcher 
+          currentLocale={currentLocale}
+          onLocaleChange={onLocaleChange}
+          className="z-50"
         />
       </div>
     </div>

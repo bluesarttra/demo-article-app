@@ -60,19 +60,21 @@ const TagsCapsule = ({
         <button
           key={tag.value}
           onClick={() => handleTagClick(tag.value)}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-            selectedTag === tag.value
-              ? 'bg-blue-600 text-white shadow-md'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
-          }`}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border`}
+          style={{
+            backgroundColor: selectedTag === tag.value ? '#EDD3AB' : '#F3F4F6', // เทาอ่อน
+            borderColor: selectedTag === tag.value ? '#D7A048' : '#D1D5DB',
+            color: selectedTag === tag.value ? 'white' : 'black', // border color: highlight or gray-300
+            borderWidth: '2px',
+            borderStyle: 'solid'
+          }}
         >
           {tag.label}
           {tag.value && articles.length > 0 && (
-            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-              selectedTag === tag.value
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 text-gray-600'
-            }`}>
+            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs`} style={{
+              backgroundColor: selectedTag === tag.value ? '#D7A048' : '#c4c4c4', // เทาอ่อน
+              color: selectedTag === tag.value ? 'white' : 'black' // สีตัวอักษร
+            }}>
               {getTagCount(tag.value)}
             </span>
           )}
