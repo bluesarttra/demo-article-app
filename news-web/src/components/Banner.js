@@ -31,7 +31,7 @@ const Banner = ({
 
   return (
     <div 
-      className={`flex w-[1440px] h-[720px] justify-center items-center flex-shrink-0 relative ${className}`}
+      className={`w-full h-[400px] md:h-[500px] lg:h-[720px] flex-shrink-0 relative ${className}`}
       style={backgroundStyle}
       {...props}
     >
@@ -40,8 +40,8 @@ const Banner = ({
         <div className="absolute inset-0"></div>
       )}
       
-      {/* Content with relative positioning to appear above overlay */}
-      <div className="relative z-10">
+      {/* Content container - children now handle their own positioning */}
+      <div className="relative z-10 w-full h-full">
         {children}
       </div>
     </div>

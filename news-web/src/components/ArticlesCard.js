@@ -45,23 +45,27 @@ const ArticlesCard = ({
       {...props}
     >
       {articleImage ? (
-        <div 
-          className="h-48 bg-cover bg-center"
-          style={{ backgroundImage: `url(${articleImage})` }}
-        ></div>
+        <div className="relative w-full aspect-[3/2] overflow-hidden">
+          <img 
+            src={articleImage}
+            alt={article.title || 'Article image'}
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            loading="lazy"
+          />
+        </div>
       ) : (
-        <div className={`h-48 bg-gradient-to-r ${gradientColors[index % gradientColors.length]}`}></div>
+        <div className={`w-full aspect-[3/2] bg-gradient-to-r ${gradientColors[index % gradientColors.length]}`}></div>
       )}
-      <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2 transition-colors text-black hover:text-blue-600">
+      <div className="p-4 md:p-6">
+        <h3 className="text-lg md:text-xl font-semibold mb-2 transition-colors text-black hover:text-blue-600 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
           {article.title}
         </h3>
-        <p className="text-gray-600 mb-4">{article.description}</p>
-        <div className="flex justify-between items-center text-sm">
-          <span className="text-blue-600 font-medium">
+        <p className="text-sm md:text-base text-gray-600 mb-3 md:mb-4 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{article.description}</p>
+        <div className="flex justify-between items-center text-xs md:text-sm">
+          <span className="text-blue-600 font-medium truncate mr-2">
             {article.tags || 'No tags'}
           </span>
-          <span className="text-gray-500">
+          <span className="text-gray-500 truncate">
             {article.author?.name || 'Unknown Author'}
           </span>
         </div>

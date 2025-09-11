@@ -31,23 +31,23 @@ const TagsCapsule = ({
     }
   };
 
-  // Helper function to count articles for a specific tag
+  // Helper function to count articles for a specific category
   const getTagCount = (tagValue) => {
     if (!tagValue || !articles.length) return 0;
     
     return articles.filter(article => {
-      const articleTags = article.tags?.toLowerCase() || '';
-      const tagLower = tagValue.toLowerCase();
+      const articleCategory = article.category;
       
-      // First try exact match
-      if (articleTags === tagLower) return true;
+      if (articleCategory) {
+        // Handle both object and string category formats
+        const categoryName = typeof articleCategory === 'object' 
+          ? articleCategory.name || articleCategory.title 
+          : articleCategory;
+        
+        return categoryName === tagValue;
+      }
       
-      // Then try splitting by commas and check for exact matches
-      const tagArray = articleTags.split(',').map(tag => tag.trim()).filter(tag => tag);
-      if (tagArray.some(tag => tag === tagLower)) return true;
-      
-      // Finally try partial matching for compound tags like "Events & Updates"
-      return tagArray.some(tag => tag.includes(tagLower));
+      return false;
     }).length;
   };
 
@@ -64,7 +64,7 @@ const TagsCapsule = ({
           style={{
             backgroundColor: selectedTag === tag.value ? '#EDD3AB' : '#F3F4F6', // เทาอ่อน
             borderColor: selectedTag === tag.value ? '#D7A048' : '#D1D5DB',
-            color: selectedTag === tag.value ? 'white' : 'black', // border color: highlight or gray-300
+            color: selectedTag === tag.value ? '#854700' : 'black', // border color: highlight or gray-300
             borderWidth: '2px',
             borderStyle: 'solid'
           }}

@@ -71,7 +71,8 @@ export async function getArticles(params = {}) {
   });
 
   try {
-    return await fetchAPI(`/api/articles?${queryParams}`);
+  const result = await fetchAPI(`/api/articles?${queryParams}`);
+    return result;
   } catch (error) {
     console.error('Error fetching articles:', error);
     return { data: [], meta: { pagination: { page: 1, pageSize: 10, pageCount: 0, total: 0 } } };
@@ -103,15 +104,6 @@ export async function getFeaturedArticles(limit = 3, locale = 'en') {
   });
 }
 
-// Fetch categories
-export async function getCategories() {
-  try {
-    return await fetchAPI('/api/categories?populate=*');
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-    return { data: [] };
-  }
-}
 
 
 // Search articles
@@ -176,6 +168,21 @@ export async function getArticlesWithSpecificPopulate(params = {}) {
     return await fetchAPI(`/api/articles?${queryParams}`);
   } catch (error) {
     console.error('Error fetching articles with specific populate:', error);
+    return { data: [], meta: { pagination: { page: 1, pageSize: 10, pageCount: 0, total: 0 } } };
+  }
+}
+
+// Fetch categories from Strapi
+export async function getCategories(locale = 'en') {
+  try {
+    const queryParams = new URLSearchParams();
+    queryParams.append('populate', '*');
+    queryParams.append('locale', locale);
+    
+    const result = await fetchAPI(`/api/categories?${queryParams}`);
+    return result;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
     return { data: [], meta: { pagination: { page: 1, pageSize: 10, pageCount: 0, total: 0 } } };
   }
 }

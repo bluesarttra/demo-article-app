@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getArticles, getFeaturedArticles, searchArticles } from '../lib/api';
+import { getArticles, getFeaturedArticles, searchArticles, getCategories } from '../lib/api';
 
 // Custom hook for fetching articles
 export function useArticles(params = {}) {
@@ -148,4 +148,31 @@ export function useSearch(query, locale = 'en') {
   }, [query, locale]); // Added locale to dependencies
 
   return { articles, loading, error };
+}
+
+// Custom hook for fetching categories
+export function useCategories(locale = 'en') {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await getCategories(locale);
+        setCategories(response.data || []);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching categories:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, [locale]);
+
+  return { categories, loading, error };
 }
