@@ -6,7 +6,7 @@ export default async function sitemap() {
   try {
     // Fetch all articles
     const articlesResponse = await getArticles({
-      pagination: { page: 1, pageSize: 1000 }, // Get all articles
+      pagination: { page: 1, pageSize: ถ }, // Get all articles
       populate: '*'
     });
     
@@ -57,3 +57,4 @@ export default async function sitemap() {
     ];
   }
 }
+

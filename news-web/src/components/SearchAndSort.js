@@ -37,11 +37,11 @@ const SearchAndSort = ({
 }) => {
   return (
     <div 
-      className={`flex px-16 justify-between items-center self-stretch ${className}`}
+      className={`flex flex-col lg:flex-row gap-4 lg:gap-0 lg:justify-between items-stretch lg:items-center self-stretch ${className}`}
       {...props}
     >
       {/* Search Input */}
-      <div className="flex-1 max-w-2xl">
+      <div className="flex-1 max-w-full lg:max-w-2xl">
         <SearchInput 
           placeholder={searchPlaceholder}
           onSearch={onSearch}
@@ -50,7 +50,7 @@ const SearchAndSort = ({
       </div>
 
       {/* Sort Box and Locale Switcher */}
-      <div className="ml-4 flex items-center gap-3">
+      <div className="flex flex-row items-center w-full gap-3 lg:w-auto lg:ml-4">
         <SortBox 
           options={sortOptions}
           value={sortValue}

@@ -54,6 +54,7 @@ export async function getArticles(params = {}) {
     // ใช้รูปแบบ populate[field]=* สำหรับฟิลด์เฉพาะ
     queryParams.append('populate[cover]', '*');
     queryParams.append('populate[author]', '*');
+    queryParams.append('populate[category]', '*');
     queryParams.append('populate[tags]', '*');
   } else if (populate) {
     queryParams.append('populate', populate);
@@ -151,6 +152,7 @@ export async function getArticlesWithSpecificPopulate(params = {}) {
   // ใช้ populate[field]=* สำหรับฟิลด์เฉพาะ
   queryParams.append('populate[cover]', '*');
   queryParams.append('populate[author]', '*');
+  queryParams.append('populate[category]', '*');
   queryParams.append('populate[tags]', '*');
   
   // Add pagination
