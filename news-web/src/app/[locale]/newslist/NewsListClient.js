@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { SearchInput, Banner, SearchAndSort, TagsCapsule, ArticlesCard, LocaleSwitcher } from '../../components';
-import { useArticles, useSearch, useArticlesWithSort, useCategories } from '../../hooks/useArticles';
-import { useLocale } from '../../hooks/useLocale';
-import { getStrapiMediaURL } from '../../lib/api';
+import { SearchInput, Banner, SearchAndSort, TagsCapsule, ArticlesCard, LocaleSwitcher } from '../../../components';
+import { useArticles, useSearch, useArticlesWithSort, useCategories } from '../../../hooks/useArticles';
+import { useLocale } from '../../../hooks/useLocale';
+import { getStrapiMediaURL } from '../../../lib/api';
+import LocaleSwitch from '@/components/LocaleSwitch';
 
 export default function NewsListClient() {
   const [sortValue, setSortValue] = useState('');
@@ -249,6 +250,7 @@ export default function NewsListClient() {
         <div className="grid grid-cols-12 gap-y-8">
           {/* Search + Sort + Locale */}
           <div className="col-span-12">
+            <LocaleSwitch></LocaleSwitch>
             <SearchAndSort
               sortOptions={sortOptions}
               sortValue={sortValue}
@@ -256,8 +258,9 @@ export default function NewsListClient() {
               onSearch={handleSearch}
               searchPlaceholder="Search articles, topics, or keywords..."
               sortPlaceholder="Sort by..."
-              currentLocale={locale}
-              onLocaleChange={setLocale}
+              currrentlocal = {locale}
+              onLocaleChangs={setLocale}
+     
             />
           </div>
 

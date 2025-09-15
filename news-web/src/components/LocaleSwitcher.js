@@ -53,14 +53,14 @@ const LocaleSwitcher = ({
       {/* Current Locale Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-1 md:space-x-2 px-3 md:px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-0"
+        className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
-        <span className="text-base md:text-lg flex-shrink-0">{currentLocaleData.flag}</span>
-        <span className="text-xs md:text-sm font-medium text-gray-700 truncate hidden sm:block">{currentLocaleData.name}</span>
+        <span className="text-lg">{currentLocaleData.flag}</span>
+        <span className="text-sm font-medium text-gray-700">{currentLocaleData.name}</span>
         <svg 
-          className={`w-3 h-3 md:w-4 md:h-4 text-gray-500 transition-transform duration-200 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           fill="none" 
           stroke="currentColor" 
           viewBox="0 0 24 24"
@@ -71,21 +71,21 @@ const LocaleSwitcher = ({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-full min-w-[120px] bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
+        <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
           {locales.map((locale) => (
             <button
               key={locale.code}
               onClick={() => handleLocaleSelect(locale.code)}
-              className={`w-full flex items-center space-x-2 md:space-x-3 px-3 md:px-4 py-2 md:py-3 text-left hover:bg-gray-50 transition-colors duration-150 ${
+              className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 ${
                 locale.code === currentLocale 
                   ? 'bg-blue-50 text-blue-700' 
                   : 'text-gray-700'
               }`}
             >
-              <span className="text-base md:text-lg flex-shrink-0">{locale.flag}</span>
-              <span className="text-xs md:text-sm font-medium truncate">{locale.name}</span>
+              <span className="text-lg">{locale.flag}</span>
+              <span className="text-sm font-medium">{locale.name}</span>
               {locale.code === currentLocale && (
-                <svg className="w-3 h-3 md:w-4 md:h-4 ml-auto text-blue-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 ml-auto text-blue-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               )}

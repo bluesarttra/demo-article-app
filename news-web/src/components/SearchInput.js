@@ -45,7 +45,7 @@ const SearchInput = ({
 
   return (
     <div 
-      className={`flex w-full max-w-[528px] px-4 py-2 items-center gap-1 rounded border border-gray-300 bg-white focus-within:border-gray-400 transition-colors h-10 ${className}`} 
+      className={`flex w-[528px] px-4 py-2 items-center gap-1 rounded border border-gray-300 bg-white focus-within:border-gray-400 transition-colors h-10 ${className}`} 
       {...props}
     >
       <input

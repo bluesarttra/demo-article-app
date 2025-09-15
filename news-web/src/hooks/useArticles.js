@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getArticles, getFeaturedArticles, searchArticles, getCategories } from '../lib/api';
+import { useParams } from 'next/navigation';
 
 // Custom hook for fetching articles
 export function useArticles(params = {}) {
@@ -38,6 +39,7 @@ export function useArticlesWithSort(sortValue = '', searchQuery = '', locale = '
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState(null);
+  const getparams  = useParams();
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -70,7 +72,7 @@ export function useArticlesWithSort(sortValue = '', searchQuery = '', locale = '
         const response = await getArticles({
           sort: strapiSort,
           pagination: { page: 1, pageSize: 10 },
-          locale: locale
+          locale: getparams.locale
         });
         
         setArticles(response.data || []);
@@ -84,7 +86,7 @@ export function useArticlesWithSort(sortValue = '', searchQuery = '', locale = '
     };
 
     fetchArticles();
-  }, [sortValue, locale]); // Added locale to dependencies
+  }, [sortValue, getparams.locale]); // Added locale to dependencies
 
   return { articles, loading, error, pagination };
 }

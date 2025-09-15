@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import { SearchInput, SortBox, LocaleSwitcher } from './index';
+import { LocaleSwitcher, SearchInput, SortBox } from "./index";
+
 
 /**
  * SearchAndSort Component
- * 
+ *
  * A container component that aligns SearchInput and SortBox with the specified design:
  * - display: flex
  * - padding: 0 64px
  * - justify-content: space-between
  * - align-items: flex-start
  * - align-self: stretch
- * 
+ *
  * @param {Array} sortOptions - Array of sort options for the SortBox
  * @param {string} sortValue - Currently selected sort value
  * @param {function} onSortChange - Callback when sort selection changes
@@ -23,7 +24,7 @@ import { SearchInput, SortBox, LocaleSwitcher } from './index';
  * @param {string} className - Additional CSS classes
  * @param {object} props - Additional props passed to the container div
  */
-const SearchAndSort = ({ 
+const SearchAndSort = ({
   sortOptions = [],
   sortValue = "",
   onSortChange,
@@ -33,16 +34,16 @@ const SearchAndSort = ({
   currentLocale = "en",
   onLocaleChange,
   className = "",
-  ...props 
+  ...props
 }) => {
   return (
-    <div 
-      className={`flex flex-col lg:flex-row gap-4 lg:gap-0 lg:justify-between items-stretch lg:items-center self-stretch ${className}`}
+    <div
+      className={`flex px-16 justify-between items-center self-stretch ${className}`}
       {...props}
     >
       {/* Search Input */}
-      <div className="flex-1 max-w-full lg:max-w-2xl">
-        <SearchInput 
+      <div className="flex-1 max-w-2xl">
+        <SearchInput
           placeholder={searchPlaceholder}
           onSearch={onSearch}
           className="w-full"
@@ -50,17 +51,16 @@ const SearchAndSort = ({
       </div>
 
       {/* Sort Box and Locale Switcher */}
-      <div className="flex flex-row items-center w-full gap-3 lg:w-auto lg:ml-4">
-        <SortBox 
+      <div className="ml-4 flex items-center gap-3">
+        <SortBox
           options={sortOptions}
           value={sortValue}
           onChange={onSortChange}
           placeholder={sortPlaceholder}
         />
-        <LocaleSwitcher 
-          currentLocale={currentLocale}
-          onLocaleChange={onLocaleChange}
-          className="z-50"
+        <LocaleSwitcher className="z-50" 
+        currentLocale={currentLocale}
+        onLocaleChange={onLocaleChange}
         />
       </div>
     </div>

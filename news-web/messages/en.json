@@ -1,0 +1,28 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "categories": "Categories",
+    "news": "News",
+    "contact": "Contact",
+    "locale" : "Eng"
+  },
+   "LocaleSwitcher": {
+    "label": "Change language",
+    "locale": "{locale, select, th {Thai} en {English} other {Unknown}}"
+  },
+  "HomePage": {
+    "categorisebt": "Browse Categories",
+    "latestnew": "Latest News",
+    "searchbar": "Search for news, topics, or keywords...",
+    "sort1": "Default Sort",
+    "sort2": "Newest First",
+    "sort3": "Oldest First",
+    "sort4": "Title A-Z",
+    "sort5": "Title Z-A",
+    "mostpop": "Most Popular",
+    "allbt": "All",
+    "healthbt": "Health",
+    "geographybt": "Geography",
+    "eventbt": "Events & Updates"
+  }
+}

@@ -31,48 +31,53 @@ const TagsCapsule = ({
     }
   };
 
-  // Helper function to count articles for a specific category
+  // Helper function to count articles for a specific tag
   const getTagCount = (tagValue) => {
     if (!tagValue || !articles.length) return 0;
     
     return articles.filter(article => {
-      const articleCategory = article.category;
+      const articleTags = article.tags?.toLowerCase() || '';
+      const tagLower = tagValue.toLowerCase();
       
-      if (articleCategory) {
-        // Handle category relation object
-        if (typeof articleCategory === 'object') {
-          // Check if the category name matches the tag value
-          return articleCategory.name === tagValue || 
-                 articleCategory.title === tagValue ||
-                 articleCategory.id === tagValue;
-        }
-        // Handle string category format (fallback)
-        return articleCategory === tagValue;
-      }
+      // First try exact match
+      if (articleTags === tagLower) return true;
       
-      return false;
+      // Then try splitting by commas and check for exact matches
+      const tagArray = articleTags.split(',').map(tag => tag.trim()).filter(tag => tag);
+      if (tagArray.some(tag => tag === tagLower)) return true;
+      
+      // Finally try partial matching for compound tags like "Events & Updates"
+      return tagArray.some(tag => tag.includes(tagLower));
     }).length;
   };
 
   return (
     <div 
-      className={`flex flex-wrap items-center gap-4 self-stretch ${className}`}
+      className={`flex px-16 items-center gap-2 self-stretch ${className}`}
       {...props}
     >
       {tags.map((tag) => (
         <button
           key={tag.value}
           onClick={() => handleTagClick(tag.value)}
-          className={`px-3 py-1.5 md:px-4 md:py-2 rounded-full text-sm md:text-base font-medium transition-all duration-200 border flex-shrink-0`}
+          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border`}
           style={{
-            backgroundColor: selectedTag === tag.value ? '#FFFFFF' : '#FFFFFF', // เทาอ่อน
+            backgroundColor: selectedTag === tag.value ? '#EDD3AB' : '#F3F4F6', // เทาอ่อน
             borderColor: selectedTag === tag.value ? '#D7A048' : '#D1D5DB',
-            color: selectedTag === tag.value ? '#D7A048' : 'black', // border color: highlight or gray-300
+            color: selectedTag === tag.value ? 'white' : 'black', // border color: highlight or gray-300
             borderWidth: '2px',
             borderStyle: 'solid'
           }}
         >
-          <span className="whitespace-nowrap">{tag.label}</span>
+          {tag.label}
+          {tag.value && articles.length > 0 && (
+            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs`} style={{
+              backgroundColor: selectedTag === tag.value ? '#D7A048' : '#c4c4c4', // เทาอ่อน
+              color: selectedTag === tag.value ? 'white' : 'black' // สีตัวอักษร
+            }}>
+              {getTagCount(tag.value)}
+            </span>
+          )}
         </button>
       ))}
     </div>

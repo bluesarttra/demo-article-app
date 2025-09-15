@@ -41,19 +41,22 @@ const SortBox = ({
 
   return (
     <div 
-      className={`flex items-center gap-1 min-w-0 px-0 lg:px-4 py-0 lg:py-2 ${className}`}
+      className={`flex px-4 py-2 items-center gap-1 ${className}`}
       {...props}
-    > 
+    >
+      {/* Sort Label */}
+      <span className="text-sm text-gray-600 font-medium">Sort:</span>
+      
       {/* Custom Dropdown */}
       <div className="relative">
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[120px] max-w-[200px] h-10"
+          className="flex items-center justify-between w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[120px] h-10"
           aria-haspopup="listbox"
           aria-expanded={isOpen}
         >
-          <span className="text-left truncate">
+          <span className="text-left">
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <svg 
