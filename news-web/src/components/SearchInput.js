@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 /**
  * SearchInput Component
@@ -20,12 +21,16 @@ import { useState } from 'react';
  * @param {object} props - Additional props passed to the container div
  */
 const SearchInput = ({ 
-  placeholder = "Search...", 
+  placeholder, 
   onSearch, 
   className = "",
   ...props 
 }) => {
   const [searchValue, setSearchValue] = useState('');
+  const t = useTranslations('HomePage');
+  
+  // Use translation if no placeholder is provided, otherwise use the passed placeholder
+  const displayPlaceholder = placeholder || t('searchbar');
 
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
@@ -45,7 +50,7 @@ const SearchInput = ({
 
   return (
     <div 
-      className={`flex w-full max-w-[528px] px-4 py-2 items-center gap-1 rounded border border-gray-300 bg-white focus-within:border-gray-400 transition-colors h-10 ${className}`} 
+      className={`flex w-[528px] px-4 py-2 items-center gap-1 rounded border border-gray-300 bg-white focus-within:border-gray-400 transition-colors h-10 ${className}`} 
       {...props}
     >
       <input
@@ -53,7 +58,7 @@ const SearchInput = ({
         value={searchValue}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
-        placeholder={placeholder}
+        placeholder={displayPlaceholder}
         aria-label="Search input"
         className="flex-1 border-none outline-none bg-transparent text-sm text-gray-900 placeholder-gray-500"
       />

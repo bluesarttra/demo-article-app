@@ -1,4 +1,4 @@
-import { generateNewsListSEO } from '../../lib/seo';
+import { generateNewsListSEO } from '../../../lib/seo';
 import NewsListClient from './NewsListClient';
 
 // Generate metadata for the news list page

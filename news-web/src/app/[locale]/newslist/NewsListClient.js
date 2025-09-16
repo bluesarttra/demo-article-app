@@ -1,11 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { SearchInput, Banner, SearchAndSort, TagsCapsule, ArticlesCard, LocaleSwitcher } from '../../components';
-import { useArticles, useSearch, useArticlesWithSort, useCategories } from '../../hooks/useArticles';
-import { useLocale } from '../../hooks/useLocale';
-import { getStrapiMediaURL } from '../../lib/api';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { SearchInput, Banner, SearchAndSort, TagsCapsule, ArticlesCard, LocaleSwitcher } from '../../../components';
+import { useArticles, useSearch, useArticlesWithSort, useCategories } from '../../../hooks/useArticles';
+import { useLocale } from 'next-intl';
+import { getStrapiMediaURL } from '../../../lib/api';
+import { useTranslations } from 'next-intl';
+import { formatDate } from '@/lib/day';
 
 export default function NewsListClient() {
   const [sortValue, setSortValue] = useState('');
@@ -13,9 +15,24 @@ export default function NewsListClient() {
   const [selectedTag, setSelectedTag] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const  t  = useTranslations('HomePage');
 
   // Locale management
-  const { locale, setLocale } = useLocale();
+  const locale = useLocale();
+
+  // Function to get translated category name (reverse mapping)
+  const getOriginalCategoryName = (translatedName) => {
+    const categoryMap = {
+      [t('healthbt')]: 'Health',
+      [t('geographybt')]: 'Geography', 
+      [t('eventbt')]: 'Events & Updates',
+      'นวัตกรรม': 'Innovation',
+      'Innovation': 'Innovation',
+      // Add more mappings as needed
+    };
+    return categoryMap[translatedName] || translatedName;
+  };
 
   // Fetch articles with sorting functionality
   const { articles, loading: articlesLoading, error: articlesError } = useArticlesWithSort(sortValue, searchQuery, locale);
@@ -25,6 +42,16 @@ export default function NewsListClient() {
 
   // Search functionality
   const { articles: searchResults, loading: searchLoading } = useSearch(searchQuery, locale);
+
+  // Handle category filter from URL query parameter
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    if (categoryParam) {
+      // Convert translated category name back to original name for filtering
+      const originalCategoryName = getOriginalCategoryName(categoryParam);
+      setSelectedTag(originalCategoryName);
+    }
+  }, [searchParams, t]);
 
   const handleSearch = (searchTerm) => {
     setSearchQuery(searchTerm);
@@ -39,20 +66,31 @@ export default function NewsListClient() {
   };
 
   const sortOptions = [
-    { value: '', label: 'Default Sort' },
-    { value: 'newest', label: 'Newest First' },
-    { value: 'oldest', label: 'Oldest First' },
-    { value: 'title-asc', label: 'Title A-Z' },
-    { value: 'title-desc', label: 'Title Z-A' },
-    { value: 'popular', label: 'Most Popular' }
+    { value: '', label: t('sort1') },
+    { value: 'newest', label: t('sort2') },
+    { value: 'oldest', label: t('sort3') },
+    { value: 'title-asc', label: t('sort4') },
+    { value: 'title-desc', label: t('sort5') },
+    { value: 'popular', label: t('mostpop') }
   ];
+
+  // Function to get translated category name
+  const getTranslatedCategoryName = (categoryName) => {
+    const categoryMap = {
+      'Health': t('healthbt'),
+      'Geography': t('geographybt'),
+      'Events & Updates': t('eventbt'),
+      // Add more category mappings as needed
+    };
+    return categoryMap[categoryName] || categoryName;
+  };
 
   // Create tag options from categories, with "All" as the first option
   const tagOptions = [
-    { value: '', label: 'All' },
+    { value: '', label: t('allbt') },
     ...categories.map(category => ({
       value: category.name || category.title || category.id,
-      label: category.name || category.title || `Category ${category.id}`
+      label: getTranslatedCategoryName(category.name || category.title) || `Category ${category.id}`
     }))
   ];
 
@@ -111,7 +149,8 @@ export default function NewsListClient() {
   // Handle banner explore more click
   const handleBannerExploreClick = () => {
     if (currentArticle?.slug) {
-      router.push(`/newsdesc/${currentArticle.slug}`);
+      // Use locale-aware navigation
+      router.push(`/${locale}/newsdesc/${currentArticle.slug}`);
     }
   };
 
@@ -125,50 +164,48 @@ export default function NewsListClient() {
           className={`text-white relative ${bannerImages.length === 0 ? 'bg-gradient-to-br from-blue-600 to-purple-700' : ''}`}
         >
           {/* Content positioned in lower left - responsive */}
-          <div className="absolute inset-x-0 bottom-16 md:bottom-20 lg:bottom-16">
+          <div className="absolute inset-x-0 bottom-22 md:bottom-6 lg:bottom-8">
             {/* container กลาง + ระยะซ้ายขวาแบบเดียวกับ main */}
             <div className="mx-auto w-full px-4 md:px-8 lg:px-16 max-w-7xl">
               {/* (ถ้าต้องการจำกัดความกว้างข้อความ) */}
               <div className="max-w-3xl">
                 {/* Category tag */}
-                <div className="mb-3 md:mb-4">
+                <div className="mb-1 sm:mb-2">
                   <span
-                    className="inline-block text-white px-3 py-1 rounded-full text-xs md:text-sm font-medium tracking-wide  /* พื้นหลังโปร่งใส + เบลอ */
-                 bg-slate-900/30 text-white
-                 backdrop-blur-md
-                 hover:bg-white hover:text-[#D7A048] hover:border-2 hover:border-[#D7A048]">
-                    {currentArticle?.category?.name || 'Sustainability'}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const categoryName = currentArticle?.category?.name || 'Sustainability';
+                      const translatedCategoryName = getTranslatedCategoryName(categoryName);
+                      router.push(`/${locale}/newslist?category=${encodeURIComponent(translatedCategoryName)}`);
+                    }}
+                    className="inline-block text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium tracking-wide bg-slate-900/30 backdrop-blur-md hover:bg-white hover:text-[#D7A048] hover:border-2 hover:border-[#D7A048] cursor-pointer transition-all duration-200">
+                    {getTranslatedCategoryName(currentArticle?.category?.name || 'Sustainability')}
                   </span>
                 </div>
 
                 {/* Date */}
-                <div className="mb-2 md:mb-3">
-                  <span className="text-gray-200 text-xs md:text-sm">
-                    {currentArticle?.publishedAt
-                      ? new Date(currentArticle.publishedAt).toLocaleDateString('en-US', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric'
-                      })
-                      : '23 July 2025'
-                    }
-                  </span>
+                <div className="mb-1 sm:mb-2">
+                <span className="text-gray-200 text-base sm:text-lg">
+                  {currentArticle?.publishedAt
+                    ? formatDate(currentArticle.publishedAt, locale, 'D MMM YYYY')
+                    : formatDate(new Date(), locale, 'D MMM YYYY')}
+                </span>
                 </div>
 
                 {/* Title */}
-                <h1 className="text-2xl md:text-4xl lg:text-4xl font-bold mb-4 md:mb-6 leading-tight text-[#D7A048]">
+                <h1 className="text-lg sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 leading-tight text-[#D7A048]">
                   {currentArticle?.title || 'Pioneering Sustainability Lubricants'}
                 </h1>
 
                 {/* CTA */}
                 <button 
                   onClick={handleBannerExploreClick}
-                  className=" mt-1 md:mt-2 inline-flex items-center gap-3 whitespace-nowrap cursor-pointer group"
+                  className="inline-flex items-center gap-2 sm:gap-3 whitespace-nowrap cursor-pointer group"
                 >
-                  <span className="inline-flex items-center justify-center w-5 h-5 md:w-8 md:h-8 rounded-full bg-[#D7A048] group-hover:bg-[#E8B97B] text-white  text-sm md:text-lg font-light transition-all duration-300">
+                  <span className="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 rounded-full bg-[#D7A048] group-hover:bg-[#E8B97B] text-white text-xs sm:text-sm md:text-lg font-light transition-all duration-300">
                     <span className="group-hover:rotate-180 transition-transform duration-300">+</span>
                   </span>
-                  <span className="text-[#D7A048] font-semibold text-base md:text-lg">Explore More</span>
+                  <span className="text-[#D7A048] font-semibold text-sm sm:text-base md:text-lg">{t('readmore')}</span>
                 </button>
               </div>
             </div>
@@ -185,7 +222,7 @@ export default function NewsListClient() {
                   setCurrentSlide(currentSlide - 1);
                 }
               }}
-              className={`absolute left-2 md:left-4 bottom-2 lg:bottom-1/6 transform -translate-y-1/2 bg-[#D7A048] text-white p-2 md:p-3 rounded-full transition-all z-10 ${currentSlide === 0
+              className={`absolute left-2 md:left-4 bottom-6 lg:bottom-1/6 transform -translate-y-1/2 bg-[#D7A048] text-white p-2 md:p-3 rounded-full transition-all z-10 ${currentSlide === 0
                 ? 'opacity-30 cursor-not-allowed'
                 : 'bg-opacity-50 hover:bg-opacity-70 cursor-pointer'
                 }`}
@@ -201,7 +238,7 @@ export default function NewsListClient() {
                   setCurrentSlide(currentSlide + 1);
                 }
               }}
-              className={`absolute right-2 md:right-4 bottom-2 lg:bottom-1/6 transform -translate-y-1/2 bg-[#D7A048] text-white p-2 md:p-3 rounded-full transition-all z-10 ${currentSlide === articlesWithImages.length - 1
+              className={`absolute right-2 md:right-4 bottom-6 lg:bottom-1/6 transform -translate-y-1/2 bg-[#D7A048] text-white p-2 md:p-3 rounded-full transition-all z-10 ${currentSlide === articlesWithImages.length - 1
                 ? 'opacity-30 cursor-not-allowed'
                 : 'bg-opacity-50 hover:bg-opacity-70 cursor-pointer'
                 }`}
@@ -212,7 +249,7 @@ export default function NewsListClient() {
             </button>
 
             {/* Slider Indicators - droplet & clickable */}
-            <div className="absolute bottom-3 md:bottom-5 left-1/2 -translate-x-1/2 flex gap-0.5 z-20">
+            <div className="absolute bottom-6 md:bottom-5 left-1/2 -translate-x-1/2 flex gap-0.5 z-20">
               {articlesWithImages.map((_, index) => {
                 const isActive = index === currentSlide;
                 return (
@@ -228,7 +265,7 @@ export default function NewsListClient() {
                       className={`w-4 h-6 md:w-5 md:h-7 transition-colors
             ${isActive
                           ? "text-[#D7A048]"
-                          : "text-gray-400"
+                          : "text-gray-400 cursor-pointer"
                         }`}
                       fill="currentColor"
                     >
@@ -254,10 +291,7 @@ export default function NewsListClient() {
               sortValue={sortValue}
               onSortChange={handleSortChange}
               onSearch={handleSearch}
-              searchPlaceholder="Search articles, topics, or keywords..."
-              sortPlaceholder="Sort by..."
-              currentLocale={locale}
-              onLocaleChange={setLocale}
+     
             />
           </div>
 
@@ -280,7 +314,10 @@ export default function NewsListClient() {
                 )}
                 {selectedTag && !searchQuery && (
                   <span className="ml-2">
-                    {displayArticles.length} article{displayArticles.length !== 1 ? 's' : ''} found
+                    {displayArticles.length === 0 
+                      ? t('noarticlesfound')
+                      : `${displayArticles.length} ${displayArticles.length === 1 ? t('articlefound') : t('articlesfound')}`
+                    }
                   </span>
                 )}
               </div>
@@ -315,6 +352,7 @@ export default function NewsListClient() {
                     article={article}
                     index={index}
                     onCategoryClick={handleTagChange}
+                    locale={locale}
                   />
                 ))}
               </div>
@@ -322,10 +360,10 @@ export default function NewsListClient() {
               <div className="text-center py-12">
                 <p className="text-gray-500">
                   {selectedTag
-                    ? `No articles found with tag "${selectedTag}".`
+                    ? `${t('noarticleswithtag')} "${selectedTag}".`
                     : searchQuery
-                      ? `No articles found for "${searchQuery}".`
-                      : 'No articles found.'
+                      ? `${t('noarticlesforsearch')} "${searchQuery}".`
+                      : t('noarticlesfound')
                   }
                 </p>
                 {selectedTag && (
@@ -340,6 +378,37 @@ export default function NewsListClient() {
             )}
           </div>
         </div>
+
+        {/* Pagination */}
+        {displayArticles?.length > 0 && (
+          <div className="col-span-12 mt-12">
+            <div className="flex justify-between sm:justify-center items-center gap-4">
+              {/* Previous Button */}
+              <button
+                className="text-gray-400 text-sm font-medium cursor-not-allowed"
+                disabled
+              >
+                Prev
+              </button>
+
+              {/* Current Page */}
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 border border-gray-900 rounded flex items-center justify-center">
+                  <span className="text-gray-900 text-sm font-medium">1</span>
+                </div>
+                <span className="text-gray-900 text-sm">of 1</span>
+              </div>
+
+              {/* Next Button */}
+              <button
+                className="text-gray-400 text-sm font-medium cursor-not-allowed"
+                disabled
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
 
       </main>
     </div>

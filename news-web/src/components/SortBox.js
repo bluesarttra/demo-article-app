@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 /**
  * SortBox Component
@@ -22,13 +23,40 @@ const SortBox = ({
   options = [],
   value = "",
   onChange,
-  placeholder = "Sort by...",
+  placeholder,
   className = "",
   ...props 
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(value);
+  const t = useTranslations('HomePage');
 
+  // Prevent body scroll when modal is open on mobile
+  useEffect(() => {
+    if (isOpen) {
+      // Store current scroll position
+      const scrollY = window.scrollY;
+      // Prevent scrolling
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+    } else {
+      // Restore scrolling
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      // Restore scroll position
+      window.scrollTo(0, parseInt(scrollY || '0') * -1);
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+    };
+  }, [isOpen]);
   const handleOptionClick = (optionValue) => {
     setSelectedValue(optionValue);
     setIsOpen(false);
@@ -41,19 +69,20 @@ const SortBox = ({
 
   return (
     <div 
-      className={`flex items-center gap-1 min-w-0 px-0 lg:px-4 py-0 lg:py-2 ${className}`}
+      className={`flex items-center gap-1 w-full sm:w-auto ${className}`}
       {...props}
-    > 
+    >
+      
       {/* Custom Dropdown */}
-      <div className="relative">
+      <div className="relative w-full sm:w-auto">
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[120px] max-w-[200px] h-10"
+          className="flex items-center justify-between w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-10"
           aria-haspopup="listbox"
           aria-expanded={isOpen}
         >
-          <span className="text-left truncate">
+          <span className="text-left text-gray-900">
             {selectedOption ? selectedOption.label : placeholder}
           </span>
           <svg 
@@ -66,9 +95,9 @@ const SortBox = ({
           </svg>
         </button>
 
-        {/* Dropdown Options */}
+        {/* Desktop Dropdown Options */}
         {isOpen && (
-          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+          <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg hidden sm:block">
             <ul className="py-1 text-sm text-gray-900" role="listbox">
               {options.map((option) => (
                 <li
@@ -88,10 +117,59 @@ const SortBox = ({
         )}
       </div>
 
-      {/* Click outside to close */}
+      {/* Mobile Modal */}
+      {isOpen && (
+        <>
+          {/* Backdrop Overlay - แยกออกมาเป็น element ต่างหาก */}
+          <div 
+            className="fixed inset-0 z-40 sm:hidden" 
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}
+            onClick={() => setIsOpen(false)}
+          />
+          
+          {/* Modal Content */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-lg sm:hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Sort</h3>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            {/* Modal Content */}
+            <div className="p-4">
+              <ul className="space-y-2">
+                {options.map((option) => (
+                  <li
+                    key={option.value}
+                    onClick={() => handleOptionClick(option.value)}
+                    className={`px-4 py-3 rounded-lg cursor-pointer transition-colors ${
+                      selectedValue === option.value 
+                        ? 'bg-[#D7A048] text-white' 
+                        : 'hover:bg-gray-100 text-gray-900'
+                    }`}
+                    role="option"
+                    aria-selected={selectedValue === option.value}
+                  >
+                    {option.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Desktop Click outside to close */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-0" 
+          className="fixed inset-0 z-40 hidden sm:block" 
           onClick={() => setIsOpen(false)}
         />
       )}

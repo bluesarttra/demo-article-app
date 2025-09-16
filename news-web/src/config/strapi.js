@@ -1,5 +1,5 @@
 // Strapi configuration
-export const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337";
+export const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL || "http://192.168.1.137:1337";
 
 export async function api(path, init = {}) {
   const res = await fetch(`${STRAPI_URL}${path}`, {

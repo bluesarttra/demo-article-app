@@ -7,8 +7,8 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to newslist page
-    router.push('/newslist');
+    // Redirect to newslist page with default locale
+    router.push('/en/newslist');
   }, [router]);
 
   return (

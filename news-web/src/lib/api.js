@@ -85,6 +85,9 @@ export async function getArticle(slug, locale = 'en') {
   const queryParams = new URLSearchParams();
   queryParams.append('filters[slug][$eq]', slug);
   queryParams.append('populate', '*'); // ใช้ populate=* แทน
+  queryParams.append('populate[blocks][populate]', '*');
+  queryParams.append('populate[blocks][on][shared.slider][populate][files]', '*');
+  queryParams.append('populate[blocks][on][shared.slider][populate][images]', '*');
   queryParams.append('locale', locale);
 
   try {
