@@ -1,8 +1,7 @@
 
-import { Inter } from "next/font/google";
 import { routing } from "../../i18n/routing";
 import "./globals.css";
-const inter = Inter({ subsets: ["latin"] });
+import "./ck-editor.css";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -11,7 +10,9 @@ export function generateStaticParams() {
 export default async function RootLayout({ children, params }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="font-fciconic">
+        {children}
+      </body>
     </html>
   );
 }

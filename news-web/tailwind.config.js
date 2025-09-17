@@ -7,6 +7,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'fciconic': ['FCIconic', 'sans-serif'],
+        'sarabun': ['Sarabun', 'sans-serif'],
+        'inter': ['Inter', 'sans-serif'],
+      },
       aspectRatio: {
         '16/9': '16 / 9',
         '4/3': '4 / 3',

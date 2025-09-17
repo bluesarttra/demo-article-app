@@ -13,7 +13,7 @@
   "HomePage": {
     "readmore": "Explore More",
     "latestnew": "Latest News",
-    "searchbar": "Search for news, topics, or keywords...",
+    "searchbar": "Search News & Articles",
     "sort1": "Default",
     "sort2": "Newest First",
     "sort3": "Oldest First",
@@ -34,6 +34,9 @@
     "noarticleswithtag": "No articles found with tag",
     "noarticlesforsearch": "No articles found for",
     "share": "Share:",
-    "linkcopied": "Link copied to clipboard!"
+    "linkcopied": "Link copied to clipboard!",
+    "next": "Next",
+    "previous": "Prev",
+    "of": "of"
   }
 }

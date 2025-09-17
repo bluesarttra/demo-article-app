@@ -109,8 +109,8 @@ export default function NewsDescClient({ article }) {
               onClick={handleBackClick}
               className="flex items-center text-[#D7A048] hover:text-[#E8B97B] transition-colors"
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-5 h-5 mr-2">
+                <path d="M19 9.25C19.4142 9.25 19.75 9.58579 19.75 10C19.75 10.4142 19.4142 10.75 19 10.75V10V9.25ZM2.46967 10.5303C2.17678 10.2374 2.17678 9.76256 2.46967 9.46967L7.24264 4.6967C7.53553 4.40381 8.01041 4.40381 8.3033 4.6967C8.59619 4.98959 8.59619 5.46447 8.3033 5.75736L4.06066 10L8.3033 14.2426C8.59619 14.5355 8.59619 15.0104 8.3033 15.3033C8.01041 15.5962 7.53553 15.5962 7.24264 15.3033L2.46967 10.5303ZM19 10V10.75H3V10V9.25H19V10Z" fill="currentColor"/>
               </svg>
               {locale === 'th' ? 'กลับไปดูข่าว' : 'Back to News'}
             </button>
@@ -178,22 +178,13 @@ export default function NewsDescClient({ article }) {
             )}
           </div>
 
-        {/* Article Details Content */}
-        {article.details && (
+        {/* Article Content */}
+        {article.content && (
           <section className="mt-12">
-            <div
-              className="
-        text-lg
-        prose prose-lg max-w-none text-gray-900
-        prose-headings:font-semibold prose-headings:text-gray-900
-        prose-strong:text-gray-900
-        prose-p:text-gray-900
-        prose-li:text-gray-900
-        whitespace-pre-wrap
-      "
+            <div className="text-gray-900 font-fciconic"
             >
-              {isHtml(article.details) ? (
-                <div dangerouslySetInnerHTML={{ __html: article.details }} />
+              {isHtml(article.content) ? (
+                <div dangerouslySetInnerHTML={{ __html: article.content }} />
               ) : (
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
@@ -204,7 +195,7 @@ export default function NewsDescClient({ article }) {
                     ),
                   }}
                 >
-                  {article.details}
+                  {article.content}
                 </ReactMarkdown>
                       )}
                     </div>
@@ -337,8 +328,8 @@ export default function NewsDescClient({ article }) {
                  <button
                    className="w-14 h-14 bg-transparent border-2 border-gray-400 rounded-full flex items-center justify-center text-gray-400 opacity-30 cursor-not-allowed"
                  >
-                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                   <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-6 h-6">
+                     <path d="M19 9.25C19.4142 9.25 19.75 9.58579 19.75 10C19.75 10.4142 19.4142 10.75 19 10.75V10V9.25ZM2.46967 10.5303C2.17678 10.2374 2.17678 9.76256 2.46967 9.46967L7.24264 4.6967C7.53553 4.40381 8.01041 4.40381 8.3033 4.6967C8.59619 4.98959 8.59619 5.46447 8.3033 5.75736L4.06066 10L8.3033 14.2426C8.59619 14.5355 8.59619 15.0104 8.3033 15.3033C8.01041 15.5962 7.53553 15.5962 7.24264 15.3033L2.46967 10.5303ZM19 10V10.75H3V10V9.25H19V10Z" fill="currentColor"/>
                    </svg>
                  </button>
 
@@ -346,8 +337,8 @@ export default function NewsDescClient({ article }) {
                  <button
                    className="w-14 h-14 bg-transparent border-2 border-gray-400 rounded-full flex items-center justify-center text-gray-400 opacity-30 cursor-not-allowed"
                  >
-                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                   <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-6 h-6">
+                     <path d="M2 9.25C1.58579 9.25 1.25 9.58579 1.25 10C1.25 10.4142 1.58579 10.75 2 10.75V10V9.25ZM18.5303 10.5303C18.8232 10.2374 18.8232 9.76256 18.5303 9.46967L13.7574 4.6967C13.4645 4.40381 12.9896 4.40381 12.6967 4.6967C12.4038 4.98959 12.4038 5.46447 12.6967 5.75736L16.9393 10L12.6967 14.2426C12.4038 14.5355 12.4038 15.0104 12.6967 15.3033C12.9896 15.5962 13.4645 15.5962 13.7574 15.3033L18.5303 10.5303ZM2 10V10.75H18V10V9.25H2V10Z" fill="currentColor"/>
                    </svg>
                  </button>
                       </div>
@@ -377,8 +368,8 @@ export default function NewsDescClient({ article }) {
                        : 'border-gray-400 opacity-30 cursor-not-allowed'
                    }`}
                  >
-                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                   <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-6 h-6">
+                     <path d="M19 9.25C19.4142 9.25 19.75 9.58579 19.75 10C19.75 10.4142 19.4142 10.75 19 10.75V10V9.25ZM2.46967 10.5303C2.17678 10.2374 2.17678 9.76256 2.46967 9.46967L7.24264 4.6967C7.53553 4.40381 8.01041 4.40381 8.3033 4.6967C8.59619 4.98959 8.59619 5.46447 8.3033 5.75736L4.06066 10L8.3033 14.2426C8.59619 14.5355 8.59619 15.0104 8.3033 15.3033C8.01041 15.5962 7.53553 15.5962 7.24264 15.3033L2.46967 10.5303ZM19 10V10.75H3V10V9.25H19V10Z" fill="currentColor"/>
                    </svg>
                  </button>
 
@@ -395,8 +386,8 @@ export default function NewsDescClient({ article }) {
                        : 'border-gray-400 opacity-30 cursor-not-allowed'
                    }`}
                  >
-                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                   <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-6 h-6">
+                     <path d="M2 9.25C1.58579 9.25 1.25 9.58579 1.25 10C1.25 10.4142 1.58579 10.75 2 10.75V10V9.25ZM18.5303 10.5303C18.8232 10.2374 18.8232 9.76256 18.5303 9.46967L13.7574 4.6967C13.4645 4.40381 12.9896 4.40381 12.6967 4.6967C12.4038 4.98959 12.4038 5.46447 12.6967 5.75736L16.9393 10L12.6967 14.2426C12.4038 14.5355 12.4038 15.0104 12.6967 15.3033C12.9896 15.5962 13.4645 15.5962 13.7574 15.3033L18.5303 10.5303ZM2 10V10.75H18V10V9.25H2V10Z" fill="currentColor"/>
                    </svg>
                  </button>
             </div>
@@ -413,8 +404,13 @@ export default function NewsDescClient({ article }) {
                  </span>
                </a>
                <span className="text-[#D7A048] text-sm">•</span>
-               <p className="text-sm text-gray-600">
-               {article.title.length > 50 ? article.title.substring(0, 50) + '...' : article.title}
+               <p className="text-base text-gray-600">
+               {article.title.length > 60 ? (
+                 <>
+                   <span className="block sm:hidden">{article.title.substring(0, 40) + '...'}</span>
+                   <span className="hidden sm:block">{article.title}</span>
+                 </>
+               ) : article.title}
                </p>
              </div>
            </section>
@@ -424,8 +420,7 @@ export default function NewsDescClient({ article }) {
 
       {/* Related Articles Section - Separate Container */}
       <section className="py-16 pt-20">
-        <div className="container mx-auto px-4 md:px-8 lg:px-16">
-          <div className="max-w-7xl mx-auto">
+        <div className="w-full px-4 sm:px-4 md:px-8 lg:px-18">
             <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
               {locale === 'th' ? 'บทความที่เกี่ยวข้อง' : 'Related Articles'}
             </h2>
@@ -499,8 +494,66 @@ export default function NewsDescClient({ article }) {
                   })()}
                 </div>
 
+                {/* Tablet and below desktop: Show 2 articles with water drops */}
+                <div className="hidden md:block xl:hidden">
+                  {(() => {
+                    const filteredArticles = allArticles
+                      .filter(relatedArticle => relatedArticle.id !== article.id)
+                      .slice(0, 6);
+                    
+                    if (filteredArticles.length === 0) return null;
+                    
+                    // Show 2 articles at a time
+                    const articlesPerPage = 2;
+                    const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
+                    const startIndex = currentRelatedArticleIndex * articlesPerPage;
+                    const currentArticles = filteredArticles.slice(startIndex, startIndex + articlesPerPage);
+                    
+                    return (
+                      <div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                          {currentArticles.map((relatedArticle, index) => (
+                            <ArticlesCard
+                              key={relatedArticle.id}
+                              article={relatedArticle}
+                              index={index}
+                              locale={locale}
+                            />
+                          ))}
+                        </div>
+                        
+                        {/* Water drop indicators for pagination */}
+                        {totalPages > 1 && (
+                          <div className="flex justify-center gap-1 mt-6">
+                            {Array.from({ length: totalPages }).map((_, pageIndex) => (
+                              <button
+                                key={pageIndex}
+                                onClick={() => setCurrentRelatedArticleIndex(pageIndex)}
+                                className="p-1"
+                                aria-label={`Go to page ${pageIndex + 1}`}
+                              >
+                                <svg
+                                  viewBox="0 0 24 24"
+                                  className={`w-4 h-6 transition-colors ${
+                                    pageIndex === currentRelatedArticleIndex
+                                      ? "text-[#D7A048]"
+                                      : "text-gray-400 cursor-pointer"
+                                  }`}
+                                  fill="currentColor"
+                                >
+                                  <path d="M12 2s-6 7.2-6 11.2C6 17.4 8.7 20 12 20s6-2.6 6-6.8C18 9.2 12 2 12 2z" />
+                                </svg>
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
+
                 {/* Desktop: Show grid */}
-                <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="hidden xl:grid grid-cols-1 xl:grid-cols-3 gap-10">
                   {allArticles
                     .filter(relatedArticle => relatedArticle.id !== article.id) // Exclude current article
                     .slice(0, 6) // Show max 6 articles
@@ -521,7 +574,6 @@ export default function NewsDescClient({ article }) {
                 </p>
               </div>
             )}
-          </div>
         </div>
       </section>
 
@@ -568,8 +620,8 @@ export default function NewsDescClient({ article }) {
                      : 'opacity-30 cursor-not-allowed'
                  }`}
                >
-                 <svg className="w-6 h-6 group-hover:w-7 group-hover:h-7 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-6 h-6 group-hover:w-7 group-hover:h-7 transition-all">
+                   <path d="M19 9.25C19.4142 9.25 19.75 9.58579 19.75 10C19.75 10.4142 19.4142 10.75 19 10.75V10V9.25ZM2.46967 10.5303C2.17678 10.2374 2.17678 9.76256 2.46967 9.46967L7.24264 4.6967C7.53553 4.40381 8.01041 4.40381 8.3033 4.6967C8.59619 4.98959 8.59619 5.46447 8.3033 5.75736L4.06066 10L8.3033 14.2426C8.59619 14.5355 8.59619 15.0104 8.3033 15.3033C8.01041 15.5962 7.53553 15.5962 7.24264 15.3033L2.46967 10.5303ZM19 10V10.75H3V10V9.25H19V10Z" fill="currentColor"/>
                  </svg>
                </button>
              )}
@@ -600,8 +652,8 @@ export default function NewsDescClient({ article }) {
                      : 'opacity-30 cursor-not-allowed'
                  }`}
                >
-                 <svg className="w-6 h-6 group-hover:w-7 group-hover:h-7 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                 <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-6 h-6 group-hover:w-7 group-hover:h-7 transition-all">
+                   <path d="M2 9.25C1.58579 9.25 1.25 9.58579 1.25 10C1.25 10.4142 1.58579 10.75 2 10.75V10V9.25ZM18.5303 10.5303C18.8232 10.2374 18.8232 9.76256 18.5303 9.46967L13.7574 4.6967C13.4645 4.40381 12.9896 4.40381 12.6967 4.6967C12.4038 4.98959 12.4038 5.46447 12.6967 5.75736L16.9393 10L12.6967 14.2426C12.4038 14.5355 12.4038 15.0104 12.6967 15.3033C12.9896 15.5962 13.4645 15.5962 13.7574 15.3033L18.5303 10.5303ZM2 10V10.75H18V10V9.25H2V10Z" fill="currentColor"/>
                  </svg>
                </button>
              )}
@@ -653,8 +705,8 @@ export default function NewsDescClient({ article }) {
                        : 'opacity-30 cursor-not-allowed'
                    }`}
                  >
-                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                   <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-5 h-5">
+                     <path d="M19 9.25C19.4142 9.25 19.75 9.58579 19.75 10C19.75 10.4142 19.4142 10.75 19 10.75V10V9.25ZM2.46967 10.5303C2.17678 10.2374 2.17678 9.76256 2.46967 9.46967L7.24264 4.6967C7.53553 4.40381 8.01041 4.40381 8.3033 4.6967C8.59619 4.98959 8.59619 5.46447 8.3033 5.75736L4.06066 10L8.3033 14.2426C8.59619 14.5355 8.59619 15.0104 8.3033 15.3033C8.01041 15.5962 7.53553 15.5962 7.24264 15.3033L2.46967 10.5303ZM19 10V10.75H3V10V9.25H19V10Z" fill="currentColor"/>
                    </svg>
                  </button>
 
@@ -683,8 +735,8 @@ export default function NewsDescClient({ article }) {
                        : 'opacity-30 cursor-not-allowed'
                    }`}
                  >
-                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                   <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-5 h-5">
+                     <path d="M2 9.25C1.58579 9.25 1.25 9.58579 1.25 10C1.25 10.4142 1.58579 10.75 2 10.75V10V9.25ZM18.5303 10.5303C18.8232 10.2374 18.8232 9.76256 18.5303 9.46967L13.7574 4.6967C13.4645 4.40381 12.9896 4.40381 12.6967 4.6967C12.4038 4.98959 12.4038 5.46447 12.6967 5.75736L16.9393 10L12.6967 14.2426C12.4038 14.5355 12.4038 15.0104 12.6967 15.3033C12.9896 15.5962 13.4645 15.5962 13.7574 15.3033L18.5303 10.5303ZM2 10V10.75H18V10V9.25H2V10Z" fill="currentColor"/>
                    </svg>
                  </button>
                   </div>

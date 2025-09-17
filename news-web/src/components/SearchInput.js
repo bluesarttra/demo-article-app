@@ -50,7 +50,7 @@ const SearchInput = ({
 
   return (
     <div 
-      className={`flex w-[528px] px-4 py-2 items-center gap-1 rounded border border-gray-300 bg-white focus-within:border-gray-400 transition-colors h-10 ${className}`} 
+        className={`flex w-[528px] px-4 py-3 items-center gap-1 rounded border border-black bg-white focus-within:border-gray-400 transition-colors h-12 ${className}`}
       {...props}
     >
       <input
@@ -60,7 +60,7 @@ const SearchInput = ({
         onKeyPress={handleKeyPress}
         placeholder={displayPlaceholder}
         aria-label="Search input"
-        className="flex-1 border-none outline-none bg-transparent text-sm text-gray-900 placeholder-gray-500"
+        className="flex-1 border-none outline-none bg-transparent text-base text-gray-900 placeholder-gray-500"
       />
       <button 
         type="button"

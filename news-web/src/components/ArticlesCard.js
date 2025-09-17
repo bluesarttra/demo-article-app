@@ -68,7 +68,7 @@ const ArticlesCard = ({
 
   return (
     <article
-      className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer relative h-full flex flex-col group ${className}`}
+      className={`bg-white rounded-lg overflow-hidden transition-all duration-300 cursor-pointer relative h-full flex flex-col group border-b border-gray-200 ${className}`}
       onClick={handleClick}
       {...props}
     >
@@ -120,7 +120,7 @@ const ArticlesCard = ({
       <div className="p-6 flex flex-col justify-between flex-1">
         {/* Date */}
         <div className="mb-2">
-          <span className="text-[#D7A048] text-sm">
+          <span className="text-[#D7A048] text-base font-light">
             {article.publishedAt
               ? formatDate(article.publishedAt, locale, 'D MMM YYYY')
               : formatDate(new Date(), locale, 'D MMM YYYY')}

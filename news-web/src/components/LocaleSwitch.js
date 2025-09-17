@@ -47,16 +47,19 @@ const LocaleSwitch = ({
   };
 
 
-  // Prevent body scroll when modal is open on mobile
+  // Prevent body scroll when modal is open on mobile only
   useEffect(() => {
-    if (isOpen) {
+    // Only prevent scrolling on mobile (below sm breakpoint)
+    const isMobile = window.innerWidth < 640; // sm breakpoint is 640px
+    
+    if (isOpen && isMobile) {
       // Store current scroll position
       const scrollY = window.scrollY;
       // Prevent scrolling
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
-    } else {
+    } else if (!isOpen && isMobile) {
       // Restore scrolling
       const scrollY = document.body.style.top;
       document.body.style.position = '';
@@ -92,7 +95,7 @@ const LocaleSwitch = ({
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={isPending}
-        className={`flex items-center justify-between w-full space-x-2 px-4 py-2 bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
+        className={`flex items-center justify-between w-full space-x-2 px-4 py-2 bg-white border border-[#D7A048] rounded-lg shadow-sm ${
           isPending ? 'opacity-30 cursor-not-allowed' : ''
         }`}
         aria-expanded={isOpen}
@@ -112,24 +115,24 @@ const LocaleSwitch = ({
 
       {/* Desktop Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden hidden sm:block">
+        <div className="absolute top-full left-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-50 overflow-hidden hidden sm:block">
           {locales.map((locale) => (
             <button
               key={locale.code}
               onClick={() => handleLocaleSelect(locale.code)}
               disabled={isPending}
-              className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 ${
+              className={`w-full flex items-center space-x-3 px-3 py-2 text-left hover:bg-gray-100 transition-colors duration-200 ${
                 locale.code === currentLocale 
-                  ? 'bg-blue-50 text-blue-700' 
-                  : 'text-gray-700'
+                  ? 'bg-[#D7A048] text-white' 
+                  : 'bg-white text-gray-700'
               } ${isPending ? 'opacity-30 cursor-not-allowed' : ''}`}
             >
               <span className="text-lg">{locale.flag}</span>
               <span className="text-sm font-medium">{locale.name}</span>
               {locale.code === currentLocale && (
-                <svg className="w-4 h-4 ml-auto text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 ml-auto text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
+                </svg>  
               )}
             </button>
           ))}

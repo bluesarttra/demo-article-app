@@ -60,7 +60,7 @@ const TagsCapsule = ({
         <button
           key={tag.value}
           onClick={() => handleTagClick(tag.value)}
-          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 border flex-shrink-0`}
+          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm sm:text-base font-medium transition-all duration-200 border flex-shrink-0`}
           style={{
             backgroundColor: selectedTag === '#F3F4F6', // เทาอ่อน
             borderColor: selectedTag === tag.value ? '#D7A048' : '#D1D5DB',

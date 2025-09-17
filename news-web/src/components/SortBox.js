@@ -31,16 +31,19 @@ const SortBox = ({
   const [selectedValue, setSelectedValue] = useState(value);
   const t = useTranslations('HomePage');
 
-  // Prevent body scroll when modal is open on mobile
+  // Prevent body scroll when modal is open on mobile only
   useEffect(() => {
-    if (isOpen) {
+    // Only prevent scrolling on mobile (below sm breakpoint)
+    const isMobile = window.innerWidth < 640; // sm breakpoint is 640px
+    
+    if (isOpen && isMobile) {
       // Store current scroll position
       const scrollY = window.scrollY;
       // Prevent scrolling
       document.body.style.position = 'fixed';
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = '100%';
-    } else {
+    } else if (!isOpen && isMobile) {
       // Restore scrolling
       const scrollY = document.body.style.top;
       document.body.style.position = '';
@@ -78,7 +81,7 @@ const SortBox = ({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full px-3 py-2 text-sm bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 h-10"
+          className="flex items-center justify-between w-full px-3 py-2 text-sm bg-white border border-[#D7A048] rounded-md shadow-sm h-10"
           aria-haspopup="listbox"
           aria-expanded={isOpen}
         >
@@ -103,8 +106,8 @@ const SortBox = ({
                 <li
                   key={option.value}
                   onClick={() => handleOptionClick(option.value)}
-                  className={`px-3 py-2 cursor-pointer hover:bg-gray-100 ${
-                    selectedValue === option.value ? 'bg-blue-50 text-blue-600' : ''
+                  className={`px-3 py-2 cursor-pointer hover:bg-gray-100 transition-colors duration-200 ${
+                    selectedValue === option.value ? 'bg-[#D7A048] text-white' : ''
                   }`}
                   role="option"
                   aria-selected={selectedValue === option.value}

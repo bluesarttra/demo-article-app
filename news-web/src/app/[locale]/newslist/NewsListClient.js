@@ -161,14 +161,15 @@ export default function NewsListClient() {
         <Banner
           images={bannerImages}
           currentSlide={currentSlide}
-          className={`text-white relative ${bannerImages.length === 0 ? 'bg-gradient-to-br from-blue-600 to-purple-700' : ''}`}
+          className={`text-white relative cursor-pointer ${bannerImages.length === 0 ? 'bg-gradient-to-br from-blue-600 to-purple-700' : ''}`}
+          onClick={handleBannerExploreClick}
         >
           {/* Content positioned in lower left - responsive */}
-          <div className="absolute inset-x-0 bottom-22 md:bottom-6 lg:bottom-8">
+          <div className="absolute inset-x-0 bottom-20 md:bottom-24 lg:bottom-26">
             {/* container กลาง + ระยะซ้ายขวาแบบเดียวกับ main */}
-            <div className="mx-auto w-full px-4 md:px-8 lg:px-16 max-w-7xl">
+            <div className="mx-auto w-full px-4 md:px-8 lg:px-16 lg:ml-8">
               {/* (ถ้าต้องการจำกัดความกว้างข้อความ) */}
-              <div className="max-w-3xl">
+              <div className="max-w-8xl">
                 {/* Category tag */}
                 <div className="mb-1 sm:mb-2">
                   <span
@@ -178,7 +179,7 @@ export default function NewsListClient() {
                       const translatedCategoryName = getTranslatedCategoryName(categoryName);
                       router.push(`/${locale}/newslist?category=${encodeURIComponent(translatedCategoryName)}`);
                     }}
-                    className="inline-block text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-medium tracking-wide bg-slate-900/30 backdrop-blur-md hover:bg-white hover:text-[#D7A048] hover:border-2 hover:border-[#D7A048] cursor-pointer transition-all duration-200">
+                    className="inline-block text-white px-4 py-2 sm:px-6 sm:py-3 rounded-full text-sm sm:text-base font-normal tracking-wide bg-slate-900/30 backdrop-blur-md hover:bg-white hover:text-[#D7A048] hover:border-2 hover:border-[#D7A048] cursor-pointer transition-all duration-200">
                     {getTranslatedCategoryName(currentArticle?.category?.name || 'Sustainability')}
                   </span>
                 </div>
@@ -193,19 +194,22 @@ export default function NewsListClient() {
                 </div>
 
                 {/* Title */}
-                <h1 className="text-lg sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 leading-tight text-[#D7A048]">
+                <h1 
+                  onClick={handleBannerExploreClick}
+                  className="text-lg sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 leading-tight text-white hover:text-[#D7A048] transition-all duration-300 cursor-pointer"
+                >
                   {currentArticle?.title || 'Pioneering Sustainability Lubricants'}
                 </h1>
 
                 {/* CTA */}
                 <button 
                   onClick={handleBannerExploreClick}
-                  className="inline-flex items-center gap-2 sm:gap-3 whitespace-nowrap cursor-pointer group"
+                  className="inline-flex items-center gap-1 sm:gap-2 whitespace-nowrap cursor-pointer group"
                 >
-                  <span className="inline-flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 rounded-full bg-[#D7A048] group-hover:bg-[#E8B97B] text-white text-xs sm:text-sm md:text-lg font-light transition-all duration-300">
+                  <span className="inline-flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 rounded-full bg-[#D7A048] group-hover:bg-[#E8B97B] text-white text-xs sm:text-sm md:text-base font-light transition-all duration-300">
                     <span className="group-hover:rotate-180 transition-transform duration-300">+</span>
                   </span>
-                  <span className="text-[#D7A048] font-semibold text-sm sm:text-base md:text-lg">{t('readmore')}</span>
+                  <span className="text-[#D7A048] font-semibold text-xs sm:text-xs md:text-sm">{t('readmore')}</span>
                 </button>
               </div>
             </div>
@@ -222,13 +226,13 @@ export default function NewsListClient() {
                   setCurrentSlide(currentSlide - 1);
                 }
               }}
-              className={`absolute left-2 md:left-4 bottom-6 lg:bottom-1/6 transform -translate-y-1/2 bg-[#D7A048] text-white p-2 md:p-3 rounded-full transition-all z-10 ${currentSlide === 0
+              className={`absolute left-2 md:left-4 bottom-2 lg:bottom-1/6 transform -translate-y-1/2 bg-[#D7A048] text-white p-2 md:p-3 rounded-full transition-all z-10 ${currentSlide === 0
                 ? 'opacity-30 cursor-not-allowed'
-                : 'bg-opacity-50 hover:bg-opacity-70 cursor-pointer'
+                : 'bg-opacity-50 hover:bg-opacity-70 hover:scale-110 cursor-pointer'
                 }`}
             >
-              <svg className="w-4 h-4 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-4 h-4 md:w-6 md:h-6">
+                <path d="M19 9.25C19.4142 9.25 19.75 9.58579 19.75 10C19.75 10.4142 19.4142 10.75 19 10.75V10V9.25ZM2.46967 10.5303C2.17678 10.2374 2.17678 9.76256 2.46967 9.46967L7.24264 4.6967C7.53553 4.40381 8.01041 4.40381 8.3033 4.6967C8.59619 4.98959 8.59619 5.46447 8.3033 5.75736L4.06066 10L8.3033 14.2426C8.59619 14.5355 8.59619 15.0104 8.3033 15.3033C8.01041 15.5962 7.53553 15.5962 7.24264 15.3033L2.46967 10.5303ZM19 10V10.75H3V10V9.25H19V10Z" fill="currentColor"/>
               </svg>
             </button>
 
@@ -238,18 +242,18 @@ export default function NewsListClient() {
                   setCurrentSlide(currentSlide + 1);
                 }
               }}
-              className={`absolute right-2 md:right-4 bottom-6 lg:bottom-1/6 transform -translate-y-1/2 bg-[#D7A048] text-white p-2 md:p-3 rounded-full transition-all z-10 ${currentSlide === articlesWithImages.length - 1
+              className={`absolute right-2 md:right-4 bottom-2 lg:bottom-1/6 transform -translate-y-1/2 bg-[#D7A048] text-white p-2 md:p-3 rounded-full transition-all z-10 ${currentSlide === articlesWithImages.length - 1
                 ? 'opacity-30 cursor-not-allowed'
-                : 'bg-opacity-50 hover:bg-opacity-70 cursor-pointer'
+                : 'bg-opacity-50 hover:bg-opacity-70 hover:scale-110 cursor-pointer'
                 }`}
             >
-              <svg className="w-4 h-4 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-4 h-4 md:w-6 md:h-6">
+                <path d="M2 9.25C1.58579 9.25 1.25 9.58579 1.25 10C1.25 10.4142 1.58579 10.75 2 10.75V10V9.25ZM18.5303 10.5303C18.8232 10.2374 18.8232 9.76256 18.5303 9.46967L13.7574 4.6967C13.4645 4.40381 12.9896 4.40381 12.6967 4.6967C12.4038 4.98959 12.4038 5.46447 12.6967 5.75736L16.9393 10L12.6967 14.2426C12.4038 14.5355 12.4038 15.0104 12.6967 15.3033C12.9896 15.5962 13.4645 15.5962 13.7574 15.3033L18.5303 10.5303ZM2 10V10.75H18V10V9.25H2V10Z" fill="currentColor"/>
               </svg>
             </button>
 
             {/* Slider Indicators - droplet & clickable */}
-            <div className="absolute bottom-6 md:bottom-5 left-1/2 -translate-x-1/2 flex gap-0.5 z-20">
+            <div className="absolute bottom-2 md:bottom-3 lg:bottom-5 left-1/2 -translate-x-1/2 flex gap-0.5 z-20">
               {articlesWithImages.map((_, index) => {
                 const isActive = index === currentSlide;
                 return (
@@ -282,7 +286,7 @@ export default function NewsListClient() {
       </div>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 md:px-8 lg:px-16 py-12">
+      <main className="w-full px-4 sm:px-4 md:px-8 lg:px-18 py-12">
         <div className="grid grid-cols-12 gap-y-8">
           {/* Search + Sort + Locale */}
           <div className="col-span-12">
@@ -345,7 +349,7 @@ export default function NewsListClient() {
                 <p className="text-gray-500">Make sure Strapi is running on http://localhost:1337</p>
               </div>
             ) : displayArticles?.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
                 {displayArticles.map((article, index) => (
                   <ArticlesCard
                     key={article.id}
@@ -381,30 +385,30 @@ export default function NewsListClient() {
 
         {/* Pagination */}
         {displayArticles?.length > 0 && (
-          <div className="col-span-12 mt-12">
-            <div className="flex justify-between sm:justify-center items-center gap-4">
+          <div className="col-span-12 mt-12 font-fciconic">
+            <div className="flex justify-between sm:justify-center items-center gap-6">
               {/* Previous Button */}
               <button
-                className="text-gray-400 text-sm font-medium cursor-not-allowed"
+                className="text-gray-400 text-lg font-medium cursor-not-allowed px-4 py-2 font-fciconic"
                 disabled
               >
-                Prev
+                {t('previous')}
               </button>
 
               {/* Current Page */}
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 border border-gray-900 rounded flex items-center justify-center">
-                  <span className="text-gray-900 text-sm font-medium">1</span>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 border border-gray-900 rounded-lg flex items-center justify-center">
+                  <span className="text-gray-900 text-lg font-regular font-fciconic">1</span>
                 </div>
-                <span className="text-gray-900 text-sm">of 1</span>
+                <span className="text-gray-900 text-lg font-medium font-fciconic">{t('of')} 1</span>
               </div>
 
               {/* Next Button */}
               <button
-                className="text-gray-400 text-sm font-medium cursor-not-allowed"
+                className="text-gray-400 text-lg font-medium cursor-not-allowed px-4 py-2 font-fciconic"
                 disabled
               >
-                Next
+                {t('next')}
               </button>
             </div>
           </div>

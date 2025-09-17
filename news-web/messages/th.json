@@ -12,9 +12,9 @@
     "locale": "{locale, select, th {Thai} en {English} other {Unknown}}"
   },
   "HomePage": {
-    "readmore": "อ่านเพิ่มเติม ",
+    "readmore": "สำรวจเพิ่มเติม ",
     "latestnew": "ใหม่ล่าสุด",
-    "searchbar": "ค้นหาข่าว, หัวข้อ หรือ คำสำคัญ...",
+    "searchbar": "ค้นหาข่าวสารและบทความ",
     "sort1": "ค่าเริ่มต้น",
     "sort2": "ใหม่ที่สุด",
     "sort3": "เก่าที่สุด",
@@ -35,6 +35,10 @@
     "noarticleswithtag": "ไม่พบบทความในหมวดหมู่",
     "noarticlesforsearch": "ไม่พบบทความสำหรับ",
     "share": "แชร์:",
-    "linkcopied": "คัดลอกลิงก์แล้ว!"
+    "linkcopied": "คัดลอกลิงก์แล้ว!",
+    "next": "ถัดไป",
+    "previous": "ก่อนหน้า",
+    "of": "จาก"
+
   }
 }

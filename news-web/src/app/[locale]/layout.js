@@ -1,11 +1,8 @@
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Inter } from "next/font/google";
 import { routing } from "../../../i18n/routing";
 import "../../app/globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -35,7 +32,7 @@ export default async function LocaleLayout({ children, params }) {
 
   return (
     <NextIntlClientProvider>
-      <div className={inter.className}>{children}</div>
+      <div className="font-fciconic">{children}</div>
     </NextIntlClientProvider>
   );
 }
