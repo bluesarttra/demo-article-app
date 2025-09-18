@@ -53,7 +53,7 @@ const TagsCapsule = ({
 
   return (
     <div 
-      className={`flex flex-wrap items-center gap-2 sm:gap-2 self-stretch ${className}`}
+      className={`flex flex-wrap items-center gap-3 sm:gap-4 self-stretch animate-[fadeInSlideLeft_0.6s_ease-out_forwards] ${className}`}
       {...props}
     >
       {tags.map((tag) => (

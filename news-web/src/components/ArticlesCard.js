@@ -24,6 +24,7 @@ const ArticlesCard = ({
   className = "",
   onCategoryClick,
   locale = 'en',
+  disableAnimation = false,
   ...props
 }) => {
   if (!article) return null;
@@ -58,17 +59,20 @@ const ArticlesCard = ({
 
   const handleCategoryClick = (e) => {
     e.stopPropagation(); // Prevent the article click from firing
-    if (categoryName) {
-      // Get translated category name for URL
-      const translatedCategoryName = getTranslatedCategoryName(categoryName);
-      // Navigate to news list with category filter
-      router.push(`/${locale}/newslist?category=${encodeURIComponent(translatedCategoryName)}`);
+    if (categoryName && onCategoryClick) {
+      // Use the onCategoryClick prop instead of router.push to avoid page scroll
+      onCategoryClick(categoryName);
     }
   };
 
   return (
     <article
-      className={`bg-white rounded-lg overflow-hidden transition-all duration-300 cursor-pointer relative h-full flex flex-col group border-b border-gray-200 ${className}`}
+      className={`bg-white rounded-lg relative h-full flex flex-col group border-b border-gray-200 mt-5 ${
+        disableAnimation 
+          ? '' 
+          : 'opacity-0 -translate-y-8 animate-[fadeInSlideUp_0.6s_ease-out_forwards]'
+      } ${className}`}
+      style={disableAnimation ? {} : { animationDelay: `${index * 0.3}s` }}
       onClick={handleClick}
       {...props}
     >
@@ -89,45 +93,41 @@ const ArticlesCard = ({
 
                /* font-size */
                text-[15px]
-               font-light
-             "
-            >
+               font-extralight
+             ">
               {getTranslatedCategoryName(categoryName)}
             </span>
       )}
 
       {articleImage ? (
-        <div className="relative overflow-hidden aspect-[4/3] w-full">
+        <div className="relative overflow-hidden aspect-[4/3] w-full rounded-t-lg">
           <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-110"
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-400 group-hover:scale-110 cursor-pointer"
             style={{ backgroundImage: `url(${articleImage})` }}
           >
             {/* Gradient overlay for better text readability */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-            {/* Hover overlay effect */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
           </div>
         </div>
       ) : (
-        <div className={`relative overflow-hidden aspect-[3/4] w-full bg-gradient-to-r ${gradientColors[index % gradientColors.length]}`}>
+        <div className="relative overflow-hidden aspect-[3/4] w-full rounded-t-lg bg-gradient-to-r from-blue-400 to-purple-600">
           {/* Gradient overlay for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-          {/* Hover overlay effect */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
         </div>
       )}
 
       <div className="p-6 flex flex-col justify-between flex-1">
         {/* Date */}
         <div className="mb-2">
-          <span className="text-[#D7A048] text-base font-light">
+          <span className="text-[#D7A048] text-base font-extralight"
+          >
             {article.publishedAt
               ? formatDate(article.publishedAt, locale, 'D MMM YYYY')
               : formatDate(new Date(), locale, 'D MMM YYYY')}
           </span>
         </div>
 
-        <h3 className="text-xl font-bold mb-4 transition-colors text-black line-clamp-2">
+        <h3 className="text-xl font-bold mb-4 transition-colors text-black line-clamp-2 cursor-pointer">
           {article.title}
         </h3>
 
@@ -139,12 +139,12 @@ const ArticlesCard = ({
           className="flex items-center space-x-3 group"
         >
           {/* วงกลม + */}
-          <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#D7A048] group-hover:bg-[#E8B97B] text-white text-lg font-light transition-transform duration-200 group-hover:rotate-180">
+            <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[#D7A048] text-white text-lg font-light hover:bg-[#E8B97B] transition-transform duration-200 hover:rotate-180 cursor-pointer">
             +
           </span>
 
           {/* ข้อความ */}
-          <span className="text-[#D7A048] font-semibold text-lg text-[14px]">
+          <span className="text-[#D7A048] font-semibold text-lg text-[14px] cursor-pointer">
             {t('readmore')}
           </span>
         </button>

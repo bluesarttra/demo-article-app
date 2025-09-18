@@ -8,12 +8,13 @@ import { getStrapiMediaURL } from '@/lib/api';
 import { formatDate } from '@/lib/day';
 import ShareBar from '@/components/ShareBar';
 import { useState, useEffect } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
 import { useArticles } from '@/hooks/useArticles';
 import ArticlesCard from '@/components/ArticlesCard';
 import ScrollShareBar from '@/components/ScrollShareBar';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 
 export default function NewsDescClient({ article }) {
@@ -37,7 +38,7 @@ export default function NewsDescClient({ article }) {
   
   // Fetch all articles for the related articles section
   const { articles: allArticles, loading: articlesLoading, error: articlesError } = useArticles({
-    pagination: { page: 1, pageSize: 6 },
+    pagination: { page: 1, pageSize: 4 },
     locale: locale
   });
 
@@ -102,7 +103,24 @@ export default function NewsDescClient({ article }) {
 
   return (
     <div className="min-h-screen bg-white">
-        {/* Header with back button and locale switcher */}
+      <style jsx global>{`
+        .related-articles-swiper {
+          height: auto !important;
+        }
+        .related-articles-swiper .swiper-wrapper {
+          align-items: stretch !important;
+          height: auto !important;
+        }
+        .related-articles-swiper .swiper-slide {
+          height: auto !important;
+          display: flex !important;
+        }
+        .related-articles-swiper .swiper-slide > * {
+          width: 100%;
+          flex: 1;
+        }
+      `}</style>
+        {/* Header with back button */}
         <header className="bg-white border-b border-gray-200">
           <div className="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
             <button 
@@ -170,7 +188,7 @@ export default function NewsDescClient({ article }) {
                 />
               </div>
             ) : (
-              <div className="w-full aspect-[3/2] bg-gradient-to-r from-blue-400 to-purple-600 rounded-lg shadow-lg flex items-center justify-center">
+              <div className="w-full aspect-[3/2] brounded-lg flex items-center justify-center">
                 <span className="text-white text-xl font-semibold">
                   {locale === 'th' ? 'ไม่มีรูปภาพ' : 'No Image Available'}
                 </span>
@@ -219,7 +237,7 @@ export default function NewsDescClient({ article }) {
                  return (
                    <div className="relative">
                      <div
-                       className="rounded-2xl overflow-hidden shadow-lg cursor-pointer group transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+                       className="rounded-2xl overflow-hidden shadow-lg cursor-pointer group"
                        onClick={() => {
                          setSelectedImage({
                            url: getStrapiMediaURL(fileUrl),
@@ -232,7 +250,7 @@ export default function NewsDescClient({ article }) {
                        <img
                          src={getStrapiMediaURL(fileUrl)}
                          alt={altText}
-                         className="block w-full aspect-[4/3] object-cover transition-all duration-300 group-hover:brightness-110"
+                         className="block w-full aspect-[4/3] object-cover transition-all duration-300 group-hover:brightness-110 group-hover:scale-110"
                          onError={(e) => {
                            console.error('Gallery image failed to load:', fileUrl);
                            e.target.style.display = 'none';
@@ -251,7 +269,7 @@ export default function NewsDescClient({ article }) {
                        >
                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                            </svg>
                          </div>
                        </div>
@@ -278,7 +296,7 @@ export default function NewsDescClient({ article }) {
                             return (
                   <div
                     key={index}
-                    className="rounded-2xl overflow-hidden shadow-lg cursor-pointer group transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+                    className="rounded-2xl overflow-hidden shadow-lg cursor-pointer group"
                      onClick={() => {
                        setSelectedImage({
                          url: getStrapiMediaURL(fileUrl),
@@ -292,7 +310,7 @@ export default function NewsDescClient({ article }) {
                                 <img 
                                   src={getStrapiMediaURL(fileUrl)}
                                   alt={altText}
-                      className="block w-full aspect-[4/3] object-cover transition-all duration-300 group-hover:brightness-110"
+                      className="block w-full aspect-[4/3] object-cover transition-all duration-300 group-hover:brightness-110 group-hover:scale-110"
                                   onError={(e) => {
                     console.error('Gallery image failed to load:', fileUrl);
                                     e.target.style.display = 'none';
@@ -311,7 +329,7 @@ export default function NewsDescClient({ article }) {
                   >
                                   <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                   </div>
                                 </div>
@@ -397,17 +415,17 @@ export default function NewsDescClient({ article }) {
              <div className="pt-14 mt-8 flex items-center gap-2">
                <a
                  href={`/${locale}/newslist`}
-                 className="inline-flex items-center text-[#D7A048] underline"
+                 className="inline-flex items-center text-[#D7A048] underline underline-offset-3"
                >
-                 <span className="font-medium">
-                   {locale === 'th' ? 'รายการข่าว' : 'News List'}
+                 <span className="text-[16px] font-[600]">
+                   {t('newslist')}
                  </span>
                </a>
-               <span className="text-[#D7A048] text-sm">•</span>
-               <p className="text-base text-gray-600">
-               {article.title.length > 60 ? (
+               <span className="text-[#f3e2c6] text-sm">•</span>
+               <p className="text-[16px] text-gray-600">
+               {article.title.length > 35 ? (
                  <>
-                   <span className="block sm:hidden">{article.title.substring(0, 40) + '...'}</span>
+                   <span className="block sm:hidden">{article.title.substring(0, 35) + '...'}</span>
                    <span className="hidden sm:block">{article.title}</span>
                  </>
                ) : article.title}
@@ -421,13 +439,13 @@ export default function NewsDescClient({ article }) {
       {/* Related Articles Section - Separate Container */}
       <section className="py-16 pt-20">
         <div className="w-full px-4 sm:px-4 md:px-8 lg:px-18">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">
-              {locale === 'th' ? 'บทความที่เกี่ยวข้อง' : 'Related Articles'}
+            <h2 className="font-semibold text-gray-900 mb-8 text-center text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+              {locale === 'th' ? 'บทความที่เกี่ยวข้อง' : 'Our News & Articles'}
             </h2>
             
             {articlesLoading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
+                {[1, 2, 3].map((i) => (
                   <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">
                     <div className="h-48 bg-gray-300"></div>
                     <div className="p-6">
@@ -444,110 +462,84 @@ export default function NewsDescClient({ article }) {
               </div>
             ) : allArticles?.length > 0 ? (
               <>
-                {/* Mobile: Show single article with water drops */}
+                {/* Mobile: Show articles with Swiper */}
                 <div className="block md:hidden">
                   {(() => {
                     const filteredArticles = allArticles
                       .filter(relatedArticle => relatedArticle.id !== article.id)
-                      .slice(0, 6);
+                      .slice(0, 3);
                     
                     if (filteredArticles.length === 0) return null;
                     
-                    const currentArticle = filteredArticles[currentRelatedArticleIndex];
-                    
                     return (
-                      <div>
-                        <ArticlesCard
-                          key={currentArticle.id}
-                          article={currentArticle}
-                          index={currentRelatedArticleIndex}
-                          locale={locale}
-                        />
-                        
-                        {/* Water drop indicators */}
-                        {filteredArticles.length > 1 && (
-                          <div className="flex justify-center gap-1 mt-6">
-                            {filteredArticles.map((_, index) => (
-                              <button
-                                key={index}
-                                onClick={() => setCurrentRelatedArticleIndex(index)}
-                                className="p-1"
-                                aria-label={`Go to article ${index + 1}`}
-                              >
-                                <svg
-                                  viewBox="0 0 24 24"
-                                  className={`w-4 h-6 transition-colors ${
-                                    index === currentRelatedArticleIndex
-                                      ? "text-[#D7A048]"
-                                      : "text-gray-400 cursor-pointer"
-                                  }`}
-                                  fill="currentColor"
-                                >
-                                  <path d="M12 2s-6 7.2-6 11.2C6 17.4 8.7 20 12 20s6-2.6 6-6.8C18 9.2 12 2 12 2z" />
-                                </svg>
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                      <Swiper
+                        spaceBetween={20}
+                        slidesPerView={1}
+                        navigation={false}
+                        autoHeight={false}
+                        pagination={{
+                          clickable: true,
+                          renderBullet: function (index, className) {
+                            return '<span class="' + className + '" style="background-color: #D7A048;"></span>';
+                          },
+                        }}
+                        className="related-articles-swiper !h-auto"
+                      >
+                        {filteredArticles.map((relatedArticle, index) => (
+                          <SwiperSlide key={relatedArticle.id} className="h-full">
+                            <ArticlesCard
+                              article={relatedArticle}
+                              index={index}
+                              locale={locale}
+                              disableAnimation={true}
+                            />
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
                     );
                   })()}
                 </div>
 
-                {/* Tablet and below desktop: Show 2 articles with water drops */}
+                {/* Tablet: Show articles with Swiper */}
                 <div className="hidden md:block xl:hidden">
                   {(() => {
                     const filteredArticles = allArticles
                       .filter(relatedArticle => relatedArticle.id !== article.id)
-                      .slice(0, 6);
+                      .slice(0, 3);
                     
                     if (filteredArticles.length === 0) return null;
                     
-                    // Show 2 articles at a time
-                    const articlesPerPage = 2;
-                    const totalPages = Math.ceil(filteredArticles.length / articlesPerPage);
-                    const startIndex = currentRelatedArticleIndex * articlesPerPage;
-                    const currentArticles = filteredArticles.slice(startIndex, startIndex + articlesPerPage);
-                    
                     return (
-                      <div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                          {currentArticles.map((relatedArticle, index) => (
+                      <Swiper
+                        spaceBetween={40}
+                        slidesPerView={2}
+                        navigation={false}
+                        autoHeight={false}
+                        pagination={{
+                          clickable: true,
+                          renderBullet: function (index, className) {
+                            return '<span class="' + className + '" style="background-color: #D7A048;"></span>';
+                          },
+                        }}
+                        breakpoints={{
+                          768: {
+                            slidesPerView: 2,
+                            spaceBetween: 40,
+                          },
+                        }}
+                        className="related-articles-swiper !h-auto"
+                      >
+                        {filteredArticles.map((relatedArticle, index) => (
+                          <SwiperSlide key={relatedArticle.id} className="h-full">
                             <ArticlesCard
-                              key={relatedArticle.id}
                               article={relatedArticle}
                               index={index}
                               locale={locale}
+                              disableAnimation={true}
                             />
-                          ))}
-                        </div>
-                        
-                        {/* Water drop indicators for pagination */}
-                        {totalPages > 1 && (
-                          <div className="flex justify-center gap-1 mt-6">
-                            {Array.from({ length: totalPages }).map((_, pageIndex) => (
-                              <button
-                                key={pageIndex}
-                                onClick={() => setCurrentRelatedArticleIndex(pageIndex)}
-                                className="p-1"
-                                aria-label={`Go to page ${pageIndex + 1}`}
-                              >
-                                <svg
-                                  viewBox="0 0 24 24"
-                                  className={`w-4 h-6 transition-colors ${
-                                    pageIndex === currentRelatedArticleIndex
-                                      ? "text-[#D7A048]"
-                                      : "text-gray-400 cursor-pointer"
-                                  }`}
-                                  fill="currentColor"
-                                >
-                                  <path d="M12 2s-6 7.2-6 11.2C6 17.4 8.7 20 12 20s6-2.6 6-6.8C18 9.2 12 2 12 2z" />
-                                </svg>
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                          </SwiperSlide>
+                        ))}
+                      </Swiper>
                     );
                   })()}
                 </div>
@@ -556,13 +548,14 @@ export default function NewsDescClient({ article }) {
                 <div className="hidden xl:grid grid-cols-1 xl:grid-cols-3 gap-10">
                   {allArticles
                     .filter(relatedArticle => relatedArticle.id !== article.id) // Exclude current article
-                    .slice(0, 6) // Show max 6 articles
+                    .slice(0, 3) // Show max 3 articles
                     .map((relatedArticle, index) => (
                       <ArticlesCard
                         key={relatedArticle.id}
                         article={relatedArticle}
                         index={index}
                         locale={locale}
+                        disableAnimation={true}
                       />
               ))}
             </div>

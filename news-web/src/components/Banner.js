@@ -42,11 +42,11 @@ const Banner = ({
 
   return (
     <div
-      className={`flex w-full h-[400px] sm:h-[450px] md:h-[500px] lg:h-[600px] xl:h-[720px] justify-center items-center flex-shrink-0 relative ${className}`}
+      className={`flex w-full h-[950px] sm:h-[450px] md:h-[500px] lg:h-[600px] xl:h-[720px] justify-center items-center flex-shrink-0 relative ${className}`}
       style={backgroundStyle}
       {...rest}
     >
-      {displayImage && <div className="absolute inset-0" />}
+      {displayImage && <div className="absolute inset-0 bg-gradient-to-t from-[#20394C]/70 to-[#20394C]/0" />}
       <div className="relative z-10 w-full h-full">{children}</div>
     </div>
   );

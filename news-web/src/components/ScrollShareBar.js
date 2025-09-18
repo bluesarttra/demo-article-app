@@ -76,18 +76,18 @@ const ScrollShareBar = ({
       <div className={`fixed top-0 left-0 right-0 z-40 ${className}`} {...props}>
          <div className="w-full  pb-3">
            <div className="bg-white/85 pt-3 backdrop-blur-sm shadow-sm rounded-b-lg overflow-hidden mx-4 sm:mx-4 md:mx-8 lg:mx-18">
-            <div className="px-4 py-3">
+            <div className="px-4 py-4">
               <div className="flex items-center justify-between">
                 {/* Article Title */}
                 <div className="flex-1 min-w-0 mr-4">
-                  <h1 className="text-lg font-semibold text-gray-900 truncate">
+                  <h1 className="text-base font-semibold text-gray-900 truncate">
                     {title}
                   </h1>
                 </div>
                 
                 {/* Share Buttons */}
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-700 text-sm font-normal mr-2">
+                  <span className="text-gray-700 text-base font-normal mr-2">
                     {t('share')}
                   </span>
                   
@@ -139,7 +139,7 @@ const ScrollShareBar = ({
             </div>
             
             {/* Progress Bar - Inside the rounded container */}
-            <div className="w-full h-1 bg-gray-200">
+            <div className="w-full h-[3px] bg-gray-200">
               <div 
                 className="h-full bg-[#D7A048] transition-all duration-150 ease-out"
                 style={{ width: `${Math.max(1, scrollProgress)}%` }}

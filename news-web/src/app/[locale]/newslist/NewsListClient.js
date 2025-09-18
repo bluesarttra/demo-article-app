@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SearchInput, Banner, SearchAndSort, TagsCapsule, ArticlesCard, LocaleSwitcher } from '../../../components';
 import { useArticles, useSearch, useArticlesWithSort, useCategories } from '../../../hooks/useArticles';
@@ -8,12 +8,18 @@ import { useLocale } from 'next-intl';
 import { getStrapiMediaURL } from '../../../lib/api';
 import { useTranslations } from 'next-intl';
 import { formatDate } from '@/lib/day';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
 export default function NewsListClient() {
   const [sortValue, setSortValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
   const [currentSlide, setCurrentSlide] = useState(0);
+  const swiperRef = useRef(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const  t  = useTranslations('HomePage');
@@ -43,26 +49,58 @@ export default function NewsListClient() {
   // Search functionality
   const { articles: searchResults, loading: searchLoading } = useSearch(searchQuery, locale);
 
-  // Handle category filter from URL query parameter
+  // Handle URL query parameters on component mount and when URL changes
   useEffect(() => {
     const categoryParam = searchParams.get('category');
+    const searchParam = searchParams.get('search');
+    const sortParam = searchParams.get('sort');
+    
     if (categoryParam) {
       // Convert translated category name back to original name for filtering
       const originalCategoryName = getOriginalCategoryName(categoryParam);
       setSelectedTag(originalCategoryName);
     }
+    
+    if (searchParam) {
+      setSearchQuery(searchParam);
+    }
+    
+    if (sortParam) {
+      setSortValue(sortParam);
+    }
   }, [searchParams, t]);
+
+  // Helper function to update URL parameters
+  const updateURLParams = (newParams) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value && value !== '') {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+    
+    const newURL = `${window.location.pathname}?${params.toString()}`;
+    router.replace(newURL, { scroll: false });
+  };
 
   const handleSearch = (searchTerm) => {
     setSearchQuery(searchTerm);
+    updateURLParams({ search: searchTerm });
   };
 
   const handleSortChange = (value) => {
     setSortValue(value);
+    updateURLParams({ sort: value });
   };
 
   const handleTagChange = (tagValue) => {
     setSelectedTag(tagValue);
+    // Convert to translated name for URL
+    const translatedTag = tagValue ? getTranslatedCategoryName(tagValue) : '';
+    updateURLParams({ category: translatedTag });
   };
 
   const sortOptions = [
@@ -125,16 +163,7 @@ export default function NewsListClient() {
     return article.cover && article.cover.url;
   }) || [];
 
-  // Auto-advance slider
-  useEffect(() => {
-    if (articlesWithImages.length <= 1) return;
-
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % articlesWithImages.length);
-    }, 5000); // Change slide every 5 seconds
-
-    return () => clearInterval(interval);
-  }, [articlesWithImages.length]);
+  // Auto-advance is now handled by Swiper's autoplay feature
 
   const currentArticle = articlesWithImages[currentSlide] || articles?.[0];
   const bannerImages = articlesWithImages.map(article =>
@@ -156,14 +185,37 @@ export default function NewsListClient() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Banner with Slider */}
-      <div className="relative">
-        <Banner
-          images={bannerImages}
-          currentSlide={currentSlide}
-          className={`text-white relative cursor-pointer ${bannerImages.length === 0 ? 'bg-gradient-to-br from-blue-600 to-purple-700' : ''}`}
-          onClick={handleBannerExploreClick}
-        >
+      {/* Hero Banner with Swiper */}
+      <div className="relative animate-in slide-in-from-top-4 duration-700 ease-out">
+        {bannerImages.length > 0 ? (
+          <div className="relative" style={{ background: '#20394C' }}>
+            <Swiper
+              ref={swiperRef}
+              modules={[Autoplay, Pagination, Navigation]}
+              spaceBetween={0}
+              slidesPerView={1}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+              }}
+              pagination={false}
+              navigation={false}
+              className="banner-swiper"
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper;
+              }}
+              onSlideChange={(swiper) => setCurrentSlide(swiper.activeIndex)}
+            >
+            {bannerImages.map((image, index) => (
+              <SwiperSlide key={index}>
+                <Banner
+                  images={[image]}
+                  currentSlide={0}
+                  className={`text-white relative cursor-pointer ${
+                    index === 0 ? 'opacity-0 animate-[fadeInSlide_1s_ease-out_forwards]' : ''
+                  }`}
+                  onClick={handleBannerExploreClick}
+                >
           {/* Content positioned in lower left - responsive */}
           <div className="absolute inset-x-0 bottom-20 md:bottom-24 lg:bottom-26">
             {/* container กลาง + ระยะซ้ายขวาแบบเดียวกับ main */}
@@ -186,7 +238,7 @@ export default function NewsListClient() {
 
                 {/* Date */}
                 <div className="mb-1 sm:mb-2">
-                <span className="text-gray-200 text-base sm:text-lg">
+                <span className="text-gray-200 text-lg sm:text-lg">
                   {currentArticle?.publishedAt
                     ? formatDate(currentArticle.publishedAt, locale, 'D MMM YYYY')
                     : formatDate(new Date(), locale, 'D MMM YYYY')}
@@ -196,7 +248,7 @@ export default function NewsListClient() {
                 {/* Title */}
                 <h1 
                   onClick={handleBannerExploreClick}
-                  className="text-lg sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 leading-tight text-white hover:text-[#D7A048] transition-all duration-300 cursor-pointer"
+                  className="text-2xl sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 leading-tight text-white hover:text-[#D7A048] transition-all duration-300 cursor-pointer"
                 >
                   {currentArticle?.title || 'Pioneering Sustainability Lubricants'}
                 </h1>
@@ -206,24 +258,76 @@ export default function NewsListClient() {
                   onClick={handleBannerExploreClick}
                   className="inline-flex items-center gap-1 sm:gap-2 whitespace-nowrap cursor-pointer group"
                 >
-                  <span className="inline-flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 rounded-full bg-[#D7A048] group-hover:bg-[#E8B97B] text-white text-xs sm:text-sm md:text-base font-light transition-all duration-300">
+                  <span className="inline-flex items-center justify-center w-6 h-6 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 rounded-full bg-[#D7A048] group-hover:bg-[#E8B97B] text-white text-sm sm:text-sm md:text-base font-light transition-all duration-300">
                     <span className="group-hover:rotate-180 transition-transform duration-300">+</span>
                   </span>
-                  <span className="text-[#D7A048] font-semibold text-xs sm:text-xs md:text-sm">{t('readmore')}</span>
+                  <span className="text-[#D7A048] font-semibold text-sm sm:text-xs md:text-sm">{t('readmore')}</span>
                 </button>
               </div>
             </div>
           </div>
-        </Banner>
+                </Banner>
+              </SwiperSlide>
+            ))}
+            </Swiper>
+          </div>
+        ) : (
+          <Banner
+            className="text-white relative cursor-pointer"
+            style={{
+              background: ' #20394C'
+            }}
+            onClick={handleBannerExploreClick}
+          >
+            {/* Content positioned in lower left - responsive */}
+            <div className="absolute inset-x-0 bottom-20 md:bottom-24 lg:bottom-26">
+              {/* container กลาง + ระยะซ้ายขวาแบบเดียวกับ main */}
+              <div className="mx-auto w-full px-4 md:px-8 lg:px-16 lg:ml-8">
+                {/* (ถ้าต้องการจำกัดความกว้างข้อความ) */}
+                <div className="max-w-4xl">
+                  {/* Category - Only show when there are images */}
+                  {bannerImages.length > 0 && (
+                    <div className="mb-2 sm:mb-3">
+                      <span className="inline-block bg-white/20 backdrop-blur-sm text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-light">
+                        {currentArticle?.category?.name || ''}
+                      </span>
+                    </div>
+                  )}
 
-        {/* Slider Controls */}
+                  {/* Title */}
+                  <h1 
+                    onClick={handleBannerExploreClick}
+                    className="text-lg sm:text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 leading-tight text-white hover:text-[#D7A048] transition-all duration-300 cursor-pointer"
+                  >
+                    {currentArticle?.title || ' '}
+                  </h1>
+
+                  {/* CTA - Only show when there are images */}
+                  {bannerImages.length > 0 && (
+                    <button 
+                      onClick={handleBannerExploreClick}
+                      className="inline-flex items-center gap-1 sm:gap-2 whitespace-nowrap cursor-pointer group"
+                    >
+                      <span className="inline-flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 rounded-full bg-[#D7A048] group-hover:bg-[#E8B97B] text-white text-xs sm:text-sm md:text-base font-light transition-all duration-300">
+                        <span className="group-hover:rotate-180 transition-transform duration-300">+</span>
+                      </span>
+                      <span className="text-[#D7A048] font-semibold text-xs sm:text-xs md:text-sm">{t('readmore')}</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </Banner>
+        )}
+
+        {/* Slider Controls - Keep for manual navigation if needed */}
         {articlesWithImages.length > 1 && (
           <>
             {/* Previous/Next Buttons - responsive */}
             <button
               onClick={() => {
-                if (currentSlide > 0) {
-                  setCurrentSlide(currentSlide - 1);
+                if (swiperRef.current) {
+                  swiperRef.current.slidePrev();
                 }
               }}
               className={`absolute left-2 md:left-4 bottom-2 lg:bottom-1/6 transform -translate-y-1/2 bg-[#D7A048] text-white p-2 md:p-3 rounded-full transition-all z-10 ${currentSlide === 0
@@ -231,15 +335,15 @@ export default function NewsListClient() {
                 : 'bg-opacity-50 hover:bg-opacity-70 hover:scale-110 cursor-pointer'
                 }`}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-4 h-4 md:w-6 md:h-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-6 h-6 md:w-6 md:h-6">
                 <path d="M19 9.25C19.4142 9.25 19.75 9.58579 19.75 10C19.75 10.4142 19.4142 10.75 19 10.75V10V9.25ZM2.46967 10.5303C2.17678 10.2374 2.17678 9.76256 2.46967 9.46967L7.24264 4.6967C7.53553 4.40381 8.01041 4.40381 8.3033 4.6967C8.59619 4.98959 8.59619 5.46447 8.3033 5.75736L4.06066 10L8.3033 14.2426C8.59619 14.5355 8.59619 15.0104 8.3033 15.3033C8.01041 15.5962 7.53553 15.5962 7.24264 15.3033L2.46967 10.5303ZM19 10V10.75H3V10V9.25H19V10Z" fill="currentColor"/>
               </svg>
             </button>
 
             <button
               onClick={() => {
-                if (currentSlide < articlesWithImages.length - 1) {
-                  setCurrentSlide(currentSlide + 1);
+                if (swiperRef.current) {
+                  swiperRef.current.slideNext();
                 }
               }}
               className={`absolute right-2 md:right-4 bottom-2 lg:bottom-1/6 transform -translate-y-1/2 bg-[#D7A048] text-white p-2 md:p-3 rounded-full transition-all z-10 ${currentSlide === articlesWithImages.length - 1
@@ -247,7 +351,7 @@ export default function NewsListClient() {
                 : 'bg-opacity-50 hover:bg-opacity-70 hover:scale-110 cursor-pointer'
                 }`}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-4 h-4 md:w-6 md:h-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none" className="w-6 h-6 md:w-6 md:h-6">
                 <path d="M2 9.25C1.58579 9.25 1.25 9.58579 1.25 10C1.25 10.4142 1.58579 10.75 2 10.75V10V9.25ZM18.5303 10.5303C18.8232 10.2374 18.8232 9.76256 18.5303 9.46967L13.7574 4.6967C13.4645 4.40381 12.9896 4.40381 12.6967 4.6967C12.4038 4.98959 12.4038 5.46447 12.6967 5.75736L16.9393 10L12.6967 14.2426C12.4038 14.5355 12.4038 15.0104 12.6967 15.3033C12.9896 15.5962 13.4645 15.5962 13.7574 15.3033L18.5303 10.5303ZM2 10V10.75H18V10V9.25H2V10Z" fill="currentColor"/>
               </svg>
             </button>
@@ -259,14 +363,18 @@ export default function NewsListClient() {
                 return (
                   <button
                     key={index}
-                    onClick={() => setCurrentSlide(index)}
+                    onClick={() => {
+                      if (swiperRef.current) {
+                        swiperRef.current.slideTo(index);
+                      }
+                    }}
                     aria-label={`Go to slide ${index + 1}`}
                     className="p-0.5"
                   >
                     {/* svg water droplet*/}
                     <svg
                       viewBox="0 0 24 24"
-                      className={`w-4 h-6 md:w-5 md:h-7 transition-colors
+                      className={`w-6 h-8 md:w-5 md:h-7 transition-colors
             ${isActive
                           ? "text-[#D7A048]"
                           : "text-gray-400 cursor-pointer"
@@ -330,20 +438,7 @@ export default function NewsListClient() {
 
           {/* Grid บทความ */}
           <div className="col-span-12">
-            {isLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-white rounded-lg shadow-md overflow-hidden animate-pulse">
-                    <div className="h-48 bg-gray-300"></div>
-                    <div className="p-6">
-                      <div className="h-6 bg-gray-300 rounded mb-2"></div>
-                      <div className="h-4 bg-gray-300 rounded mb-4"></div>
-                      <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : articlesError ? (
+            {articlesError ? (
               <div className="text-center py-12">
                 <p className="text-red-600 mb-4">Error loading articles: {articlesError}</p>
                 <p className="text-gray-500">Make sure Strapi is running on http://localhost:1337</p>
@@ -352,7 +447,7 @@ export default function NewsListClient() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-10">
                 {displayArticles.map((article, index) => (
                   <ArticlesCard
-                    key={article.id}
+                    key={`${article.id}-${searchQuery}-${sortValue}-${selectedTag}`}
                     article={article}
                     index={index}
                     onCategoryClick={handleTagChange}
@@ -364,7 +459,7 @@ export default function NewsListClient() {
               <div className="text-center py-12">
                 <p className="text-gray-500">
                   {selectedTag
-                    ? `${t('noarticleswithtag')} "${selectedTag}".`
+                    ? `${t('noarticleswithtag')} "${getTranslatedCategoryName(selectedTag)}"`
                     : searchQuery
                       ? `${t('noarticlesforsearch')} "${searchQuery}".`
                       : t('noarticlesfound')

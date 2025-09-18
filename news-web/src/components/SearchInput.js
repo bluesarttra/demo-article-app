@@ -27,10 +27,11 @@ const SearchInput = ({
   ...props 
 }) => {
   const [searchValue, setSearchValue] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const t = useTranslations('HomePage');
   
   // Use translation if no placeholder is provided, otherwise use the passed placeholder
-  const displayPlaceholder = placeholder || t('searchbar');
+  const displayPlaceholder = isFocused ? '' : (placeholder || t('searchbar'));
 
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
@@ -50,7 +51,7 @@ const SearchInput = ({
 
   return (
     <div 
-        className={`flex w-[528px] px-4 py-3 items-center gap-1 rounded border border-black bg-white focus-within:border-gray-400 transition-colors h-12 ${className}`}
+        className={`flex w-[528px] px-4 py-3 items-center gap-1 rounded border border-black bg-white focus-within:border-[#D7A048] transition-colors h-12 animate-[fadeInSlideRight_0.6s_ease-out_forwards] ${className}`}
       {...props}
     >
       <input
@@ -58,9 +59,11 @@ const SearchInput = ({
         value={searchValue}
         onChange={handleInputChange}
         onKeyPress={handleKeyPress}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
         placeholder={displayPlaceholder}
         aria-label="Search input"
-        className="flex-1 border-none outline-none bg-transparent text-base text-gray-900 placeholder-gray-500"
+        className="flex-1 border-none outline-none bg-transparent text-base text-gray-900 placeholder-gray-400"
       />
       <button 
         type="button"

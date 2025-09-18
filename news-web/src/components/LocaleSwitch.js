@@ -95,7 +95,7 @@ const LocaleSwitch = ({
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={isPending}
-        className={`flex items-center justify-between w-full space-x-2 px-4 py-2 bg-white border border-[#D7A048] rounded-lg shadow-sm ${
+        className={`flex items-center justify-between w-full space-x-2 px-4 py-2 bg-white border border-[#D7A048] rounded-lg shadow-sm h-12 ${
           isPending ? 'opacity-30 cursor-not-allowed' : ''
         }`}
         aria-expanded={isOpen}
@@ -150,7 +150,7 @@ const LocaleSwitch = ({
           />
           
           {/* Modal Content */}
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-lg sm:hidden">
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-lg sm:hidden transform transition-transform duration-300 ease-out animate-[slideUp_0.3s_ease-out_forwards]">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900">Language</h3>

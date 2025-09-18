@@ -81,7 +81,7 @@ const SortBox = ({
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full px-3 py-2 text-sm bg-white border border-[#D7A048] rounded-md shadow-sm h-10"
+          className="flex items-center justify-between w-full px-3 py-2 text-sm bg-white border border-[#D7A048] rounded-md shadow-sm h-12"
           aria-haspopup="listbox"
           aria-expanded={isOpen}
         >
@@ -131,10 +131,10 @@ const SortBox = ({
           />
           
           {/* Modal Content */}
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-lg sm:hidden">
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-lg sm:hidden transform transition-transform duration-400 ease-out animate-[slideUp_0.3s_ease-out_forwards]">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900">Sort</h3>
+              <h3 className="text-xl font-semibold text-gray-900">Sort</h3>
               <button
                 onClick={() => setIsOpen(false)}
                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
