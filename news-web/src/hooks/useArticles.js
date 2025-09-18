@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getArticles, getFeaturedArticles, searchArticles } from '../lib/api';
+import { getArticles, getFeaturedArticles, searchArticles, getCategories } from '../lib/api';
 
 // Custom hook for fetching articles
 export function useArticles(params = {}) {
@@ -33,7 +33,7 @@ export function useArticles(params = {}) {
 }
 
 // Custom hook for fetching articles with sorting
-export function useArticlesWithSort(sortValue = '', searchQuery = '') {
+export function useArticlesWithSort(sortValue = '', searchQuery = '', locale = 'en') {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -69,7 +69,8 @@ export function useArticlesWithSort(sortValue = '', searchQuery = '') {
 
         const response = await getArticles({
           sort: strapiSort,
-          pagination: { page: 1, pageSize: 10 }
+          pagination: { page: 1, pageSize: 10 },
+          locale: locale
         });
         
         setArticles(response.data || []);
@@ -83,7 +84,7 @@ export function useArticlesWithSort(sortValue = '', searchQuery = '') {
     };
 
     fetchArticles();
-  }, [sortValue]); // Removed searchQuery from dependencies to prevent unnecessary re-renders
+  }, [sortValue, locale]); // Added locale to dependencies
 
   return { articles, loading, error, pagination };
 }
@@ -116,7 +117,7 @@ export function useFeaturedArticles(limit = 3) {
 }
 
 // Custom hook for search
-export function useSearch(query) {
+export function useSearch(query, locale = 'en') {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -132,7 +133,7 @@ export function useSearch(query) {
       try {
         setLoading(true);
         setError(null);
-        const response = await searchArticles(query);
+        const response = await searchArticles(query, { locale: locale });
         setArticles(response.data || []);
       } catch (err) {
         setError(err.message);
@@ -144,7 +145,34 @@ export function useSearch(query) {
 
     const timeoutId = setTimeout(performSearch, 300); // Debounce search
     return () => clearTimeout(timeoutId);
-  }, [query]); // Only depend on query
+  }, [query, locale]); // Added locale to dependencies
 
   return { articles, loading, error };
+}
+
+// Custom hook for fetching categories
+export function useCategories(locale = 'en') {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await getCategories(locale);
+        setCategories(response.data || []);
+      } catch (err) {
+        setError(err.message);
+        console.error('Error fetching categories:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, [locale]);
+
+  return { categories, loading, error };
 }

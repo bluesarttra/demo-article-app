@@ -53,29 +53,23 @@ const TagsCapsule = ({
 
   return (
     <div 
-      className={`flex px-16 items-center gap-2 self-stretch ${className}`}
+      className={`flex flex-wrap items-center gap-3 sm:gap-4 self-stretch animate-[fadeInSlideLeft_0.6s_ease-out_forwards] ${className}`}
       {...props}
     >
       {tags.map((tag) => (
         <button
           key={tag.value}
           onClick={() => handleTagClick(tag.value)}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-            selectedTag === tag.value
-              ? 'bg-blue-600 text-white shadow-md'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-gray-900'
-          }`}
+          className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-sm sm:text-base font-medium transition-all duration-200 border flex-shrink-0`}
+          style={{
+            backgroundColor: selectedTag === tag.value ? '#FCE5E5' : '#FFFFFF', // เทาอ่อน
+            borderColor: selectedTag === tag.value ? '#E60000' : '#D1D5DB',
+            color: selectedTag === tag.value ? '#E60000' : 'black', // border color: highlight or gray-300
+            borderWidth: '2px',
+            borderStyle: 'solid'
+          }}
         >
           {tag.label}
-          {tag.value && articles.length > 0 && (
-            <span className={`ml-2 px-2 py-0.5 rounded-full text-xs ${
-              selectedTag === tag.value
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 text-gray-600'
-            }`}>
-              {getTagCount(tag.value)}
-            </span>
-          )}
         </button>
       ))}
     </div>

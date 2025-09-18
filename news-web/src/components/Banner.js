@@ -12,40 +12,45 @@
  * - flex-shrink: 0
  * 
  * @param {React.ReactNode} children - Content to display inside the banner
- * @param {string} backgroundImage - URL for background image
+ * @param {Array} images - Array of image URLs for slider
+ * @param {number} currentSlide - Current slide index for image slider
+ * @param {string} backgroundImage - URL for single background image (fallback)
  * @param {string} className - Additional CSS classes
  * @param {object} props - Additional props passed to the container div
  */
-const Banner = ({ 
-  children, 
+const Banner = ({
+  children,
+  images = [],
+  currentSlide = 0,
   backgroundImage,
-  className = "",
-  ...props 
+  className = '',
+  ...rest
 }) => {
-  const backgroundStyle = backgroundImage ? {
-    backgroundImage: `url(${backgroundImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat'
-  } : {};
+  // Determine which image to display
+  const displayImage = images.length > 0 
+    ? images[currentSlide] 
+    : backgroundImage;
+
+  const backgroundStyle = displayImage
+    ? {
+        backgroundImage: `url(${displayImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }
+    : {};
 
   return (
-    <div 
-      className={`flex w-[1440px] h-[720px] justify-center items-center flex-shrink-0 relative ${className}`}
+    <div
+      className={`flex w-full h-[950px] sm:h-[450px] md:h-[500px] lg:h-[600px] xl:h-[720px] justify-center items-center flex-shrink-0 relative ${className}`}
       style={backgroundStyle}
-      {...props}
+      {...rest}
     >
-      {/* Overlay for better text readability when using background image */}
-      {backgroundImage && (
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-      )}
-      
-      {/* Content with relative positioning to appear above overlay */}
-      <div className="relative z-10">
-        {children}
-      </div>
+      {displayImage && <div className="absolute inset-0 bg-gradient-to-t from-[#000000]/70 to-[#20394C]/0" />}
+      <div className="relative z-10 w-full h-full">{children}</div>
     </div>
   );
 };
 
 export default Banner;
+

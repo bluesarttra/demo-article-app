@@ -31,6 +31,7 @@ export async function getArticles(params = {}) {
     populate = '*', // ใช้ populate=* แทน
     pagination = { page: 1, pageSize: 10 },
     filters = {},
+    locale = 'en', // Default locale
   } = params;
 
   // Build query parameters for Strapi v5
@@ -41,6 +42,11 @@ export async function getArticles(params = {}) {
     queryParams.append('sort', sort);
   }
   
+  // Add locale
+  if (locale) {
+    queryParams.append('locale', locale);
+  }
+  
   // Add populate - ใช้ populate=* สำหรับทุกฟิลด์
   if (populate === '*') {
     queryParams.append('populate', '*');
@@ -48,6 +54,7 @@ export async function getArticles(params = {}) {
     // ใช้รูปแบบ populate[field]=* สำหรับฟิลด์เฉพาะ
     queryParams.append('populate[cover]', '*');
     queryParams.append('populate[author]', '*');
+    queryParams.append('populate[category]', '*');
     queryParams.append('populate[tags]', '*');
   } else if (populate) {
     queryParams.append('populate', populate);
@@ -65,7 +72,8 @@ export async function getArticles(params = {}) {
   });
 
   try {
-    return await fetchAPI(`/api/articles?${queryParams}`);
+  const result = await fetchAPI(`/api/articles?${queryParams}`);
+    return result;
   } catch (error) {
     console.error('Error fetching articles:', error);
     return { data: [], meta: { pagination: { page: 1, pageSize: 10, pageCount: 0, total: 0 } } };
@@ -73,10 +81,14 @@ export async function getArticles(params = {}) {
 }
 
 // Fetch single article by slug
-export async function getArticle(slug) {
+export async function getArticle(slug, locale = 'en') {
   const queryParams = new URLSearchParams();
   queryParams.append('filters[slug][$eq]', slug);
   queryParams.append('populate', '*'); // ใช้ populate=* แทน
+  queryParams.append('populate[blocks][populate]', '*');
+  queryParams.append('populate[blocks][on][shared.slider][populate][files]', '*');
+  queryParams.append('populate[blocks][on][shared.slider][populate][images]', '*');
+  queryParams.append('locale', locale);
 
   try {
     const response = await fetchAPI(`/api/articles?${queryParams}`);
@@ -88,32 +100,15 @@ export async function getArticle(slug) {
 }
 
 // Fetch featured articles (you can customize this logic)
-export async function getFeaturedArticles(limit = 3) {
+export async function getFeaturedArticles(limit = 3, locale = 'en') {
   return getArticles({
     pagination: { page: 1, pageSize: limit },
     filters: { featured: { $eq: true } }, // Assuming you have a featured field
+    locale: locale,
   });
 }
 
-// Fetch categories
-export async function getCategories() {
-  try {
-    return await fetchAPI('/api/categories?populate=*');
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-    return { data: [] };
-  }
-}
 
-// Fetch authors
-export async function getAuthors() {
-  try {
-    return await fetchAPI('/api/authors?populate=*');
-  } catch (error) {
-    console.error('Error fetching authors:', error);
-    return { data: [] };
-  }
-}
 
 // Search articles
 export async function searchArticles(query, params = {}) {
@@ -123,6 +118,7 @@ export async function searchArticles(query, params = {}) {
   queryParams.append('populate', '*'); // ใช้ populate=* แทน
   queryParams.append('pagination[page]', params.pagination?.page || 1);
   queryParams.append('pagination[pageSize]', params.pagination?.pageSize || 10);
+  queryParams.append('locale', params.locale || 'en'); // Default locale
   
   if (params.sort) {
     queryParams.append('sort', params.sort);
@@ -159,6 +155,7 @@ export async function getArticlesWithSpecificPopulate(params = {}) {
   // ใช้ populate[field]=* สำหรับฟิลด์เฉพาะ
   queryParams.append('populate[cover]', '*');
   queryParams.append('populate[author]', '*');
+  queryParams.append('populate[category]', '*');
   queryParams.append('populate[tags]', '*');
   
   // Add pagination
@@ -177,5 +174,42 @@ export async function getArticlesWithSpecificPopulate(params = {}) {
   } catch (error) {
     console.error('Error fetching articles with specific populate:', error);
     return { data: [], meta: { pagination: { page: 1, pageSize: 10, pageCount: 0, total: 0 } } };
+  }
+}
+
+// Fetch categories from Strapi
+export async function getCategories(locale = 'en') {
+  try {
+    const queryParams = new URLSearchParams();
+    queryParams.append('populate', '*');
+    queryParams.append('locale', locale);
+    
+    const result = await fetchAPI(`/api/categories?${queryParams}`);
+    return result;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return { data: [], meta: { pagination: { page: 1, pageSize: 10, pageCount: 0, total: 0 } } };
+  }
+}
+
+// Fetch Facebook single type (stored as 'social' in Strapi)
+export async function getFacebook() {
+  try {
+    const response = await fetchAPI('/api/social?populate=*');
+    return response.data || null;
+  } catch (error) {
+    console.error('Error fetching Facebook data:', error);
+    return null;
+  }
+}
+
+// Fetch Instagram single type
+export async function getInstagram() {
+  try {
+    const response = await fetchAPI('/api/instagram?populate=*');
+    return response.data || null;
+  } catch (error) {
+    console.error('Error fetching Instagram data:', error);
+    return null;
   }
 }
